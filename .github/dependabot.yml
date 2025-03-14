@@ -10,4 +10,4 @@ updates:
     schedule:
       interval: 'daily'
     reviewers:
-      - 'java-reviewers'
+      - 'maze-technology/java-engineers'
