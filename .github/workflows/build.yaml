@@ -16,7 +16,7 @@ permissions:
 
 env:
   VERSION: ${{ github.event.pull_request.number }}-${{ github.run_number }}
-  JAVA_HOME: "" # force JAVA_HOME to be empty, so gradle will use the sdkman java version
+  JAVA_HOME: '' # force JAVA_HOME to be empty, so gradle will use the sdkman java version
 
 jobs:
   build:
@@ -68,8 +68,8 @@ jobs:
       - name: Code vulnerability scan
         uses: anchore/scan-action@v6
         with:
-          path: "${{ github.workspace }}/build/libs"
+          path: '${{ github.workspace }}/build/libs'
           fail-build: true
-          severity-cutoff: "high"
+          severity-cutoff: 'high'
           output-format: table
           only-fixed: false
