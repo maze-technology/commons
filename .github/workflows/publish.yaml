@@ -79,10 +79,17 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
 
+      - name: Test GitHub App Token
+        run: |
+          curl -H "Authorization: Bearer ${{ env.GITHUB_TOKEN }}" \
+               -H "Accept: application/vnd.github.v3+json" \
+               https://api.github.com/user
+
       - name: Publish library ${{ needs.prepare_tag.outputs.VERSION }}
         env:
+          GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }}
           GITHUB_REPOSITORY: ${{ github.repository }}
-        run: ./gradlew -Pversion=${{ needs.prepare_tag.outputs.VERSION }} publish --info --stacktrace
+        run: ./gradlew -Pversion=${{ needs.prepare_tag.outputs.VERSION }} publish
 
   submit_dependencies:
     name: Submit Dependencies
