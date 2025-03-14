@@ -82,7 +82,7 @@ jobs:
       - name: Publish library ${{ needs.prepare_tag.outputs.VERSION }}
         env:
           GITHUB_REPOSITORY: ${{ github.repository }}
-        run: ./gradlew -Pversion=${{ needs.prepare_tag.outputs.VERSION }} publish
+        run: ./gradlew -Pversion=${{ needs.prepare_tag.outputs.VERSION }} publish --info --stacktrace
 
   submit_dependencies:
     name: Submit Dependencies
