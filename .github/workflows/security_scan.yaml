@@ -13,8 +13,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      GITHUB_USERNAME: ${{ secrets.PAT_USERNAME }}
-      GITHUB_TOKEN: ${{ secrets.PAT_DEPENDENCIES_TOKEN }}
+      GITHUB_TOKEN: ${{ github.token }}
+      GITHUB_USERNAME: x-access-token
     outputs:
       APP_NAME: ${{ steps.app_name.outputs.value }}
     steps:
