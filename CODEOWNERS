@@ -12,3 +12,12 @@ src/test/java @java-engineers
 
 # The team "protobuf-engineers" is responsible for everything in the "src/main/proto" directory
 src/main/proto @protobuf-engineers
+
+# The team "protobuf-engineers" is responsible for all .proto files
+*.proto @protobuf-engineers
+
+# The team "opentofu-engineers" is responsible for all .tf files
+*.tf @opentofu-engineers
+
+# The team "java-engineers" is responsible for all .java files
+*.java @java-engineers
