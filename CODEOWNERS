@@ -1,0 +1,10 @@
+# Each line is a file pattern followed by one or more owners
+
+# By default, all files are owned by the java-engineers team
+* @maze-technology/java-engineers
+
+# Github CI engineers
+.github/ @maze-technology/github-ci-engineers
+
+# Protobuf engineers
+src/main/proto @maze-technology/protobuf-engineers

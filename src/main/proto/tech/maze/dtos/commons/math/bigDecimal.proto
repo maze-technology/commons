@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package tech.maze.dtos.commons.math;
+
+option java_multiple_files = true;
+
+/**
+ * Network representation of Java BigDecimal (https://docs.oracle.com/javase/8/docs/api/java/math/BigDecimal.html).
+ * Aims to store infite numbers (with decimals).
+ *
+ * https://docs.oracle.com/cd/E19957-01/806-3568/ncg_goldberg.html
+ */
+message BigDecimal {
+  bytes unscaledValue = 1;
+  int32 scale = 2;
+  // TODO: Maybe there is a third value to store? precision? https://stackoverflow.com/a/63825487
+}
