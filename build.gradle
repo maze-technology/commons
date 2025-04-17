@@ -1,0 +1,258 @@
+plugins {
+  id("jacoco")
+  id("checkstyle")
+  id("java-library")
+  id("maven-publish")
+  id("com.google.protobuf") version "0.9.4"
+  id("com.github.spotbugs") version "6.1.5"
+  id("org.springframework.boot") version "3.4.3"
+  id("io.spring.dependency-management") version "1.1.7"
+}
+
+group = "tech.maze"
+
+ext {
+  junitVersion = "5.12.0"
+  wiremockVersion = "3.0.1"
+  mapStructVersion = "1.6.3"
+  springBootVersion = "3.4.3"
+  protocPluginVersion = "1.70.0"
+  protobufJavaVersion = "4.29.3"
+  testContainersVersion = "1.20.5"
+}
+
+repositories {
+  mavenLocal()
+  mavenCentral()
+  gradlePluginPortal()
+
+  maven {
+    url = "https://repo.spring.io/milestone"
+  }
+
+  maven {
+    url = "https://repo.spring.io/release"
+  }
+}
+
+dependencyManagement {
+  imports {
+    mavenBom "org.springframework.boot:spring-boot-dependencies:$springBootVersion"
+    mavenBom "org.testcontainers:testcontainers-bom:$testContainersVersion"
+    mavenBom "org.junit:junit-bom:$junitVersion"
+  }
+}
+
+dependencies {
+  // Spring Boot
+  implementation "org.springframework.boot:spring-boot-starter"
+
+  // Protobuf
+  implementation "com.google.protobuf:protobuf-java:$protobufJavaVersion"
+
+  // MapStruct
+  implementation "org.mapstruct:mapstruct:$mapStructVersion"
+  annotationProcessor "org.mapstruct:mapstruct-processor:$mapStructVersion"
+
+  // Lombok
+  compileOnly "org.projectlombok:lombok"
+  annotationProcessor "org.projectlombok:lombok"
+  implementation "org.slf4j:slf4j-api"
+
+  // JUnit Test Framework
+  testImplementation "org.springframework.boot:spring-boot-starter-test"
+  testImplementation "org.testcontainers:junit-jupiter"
+  testImplementation "org.testcontainers:testcontainers"
+  testImplementation "org.testcontainers:localstack"
+
+  testImplementation "org.junit.jupiter:junit-jupiter"
+  testImplementation "org.junit.jupiter:junit-jupiter-api"
+  testImplementation "org.junit.jupiter:junit-jupiter-engine"
+
+  // Mock Frameworks
+  testImplementation "com.github.tomakehurst:wiremock-jre8-standalone:${wiremockVersion}"
+}
+
+checkstyle {
+  toolVersion = "10.21.3"
+  maxWarnings = 0
+  ignoreFailures = true
+  sourceSets = [project.sourceSets.main]
+}
+
+import com.github.spotbugs.snom.Confidence
+import com.github.spotbugs.snom.Effort
+
+spotbugs {
+  projectName = name
+  maxHeapSize = "512m"
+  showProgress = false
+  ignoreFailures = true
+  showStackTraces = true
+  effort = Effort.valueOf("DEFAULT")
+  reportLevel = Confidence.valueOf("DEFAULT")
+  extraArgs = [
+    "-auxclasspath",
+    sourceSets.main.runtimeClasspath.filter {
+      !it.absolutePath.contains("/generated/")
+    }.asPath
+  ]
+}
+
+spotbugsMain {
+  dependsOn compileJava
+
+  classes = fileTree("${buildDir}/classes/java/main") {
+    exclude "tech/maze/dtos/**"
+  }
+
+  reports {
+    html {
+      required = true
+      outputLocation = file("$buildDir/reports/spotbugs/main/spotbugs.html")
+      stylesheet = "fancy-hist.xsl"
+    }
+  }
+}
+
+test {
+  useJUnitPlatform()
+
+  testLogging {
+    events = ["passed", "skipped", "failed"]
+  }
+
+  reports {
+    junitXml.required = true
+  }
+
+  finalizedBy(jacocoTestReport)
+}
+
+jacocoTestReport {
+  sourceSets(sourceSets.main)
+  executionData = fileTree(project.rootDir.absolutePath).include("**/build/jacoco/*.exec")
+
+  afterEvaluate {
+    classDirectories.setFrom(files(classDirectories.files.collect {
+      fileTree(dir: it, exclude: [
+        "tech/maze/dtos/*",
+      ])
+    }))
+  }
+
+  reports {
+    xml.required = true
+    csv.required = false
+  }
+}
+
+tasks.named('jacocoTestReport') {
+  dependsOn /*'bootStartScripts',*/ 'compileIntegrationTestJava', 'integrationTest', 'processIntegrationTestResources'/*, 'startScripts'*/, ':javadoc'
+}
+
+tasks.named('resolveMainClassName').configure {
+  enabled = false
+}
+
+jacocoTestCoverageVerification {
+  violationRules {
+    rule {
+      limit {
+        minimum = 0.8
+      }
+    }
+  }
+}
+
+configurations {
+  integrationTestApi.extendsFrom testApi
+  integrationTestCompile.extendsFrom testCompile
+  integrationTestRuntime.extendsFrom testRuntime
+}
+
+testing {
+  suites {
+    integrationTest(JvmTestSuite) {
+      dependencies {
+        implementation project()
+        // Use the provided integrationTestImplementation configuration
+      }
+    }
+  }
+}
+
+tasks.withType(Javadoc).configureEach {
+  source = source.filter {
+    !it.absolutePath.startsWith("${buildDir.absolutePath}/generated/")
+  }
+}
+
+tasks.named("checkstyleMain", Checkstyle) {
+  source = source.filter { !it.absolutePath.contains("tech/maze/dtos") }
+}
+
+tasks.named('check') {
+  dependsOn testing.suites.integrationTest
+}
+
+protobuf {
+  protoc {
+    artifact = "com.google.protobuf:protoc:$protobufJavaVersion"
+  }
+
+  plugins {
+    grpc {
+      artifact = "io.grpc:protoc-gen-grpc-java:$protocPluginVersion"
+    }
+  }
+
+  generateProtoTasks {
+    all().forEach { task ->
+      task.plugins {
+        grpc {}
+      }
+    }
+  }
+}
+
+bootJar {
+  enabled = false
+}
+
+jar {
+  enabled = true
+  archiveClassifier = ""
+
+  manifest {
+    attributes(
+      'Implementation-Title': project.name,
+      'Implementation-Version': project.version,
+    )
+  }
+}
+
+java {
+  withJavadocJar()
+  withSourcesJar()
+}
+
+publishing {
+  publications {
+    maven(MavenPublication) {
+      from components.java
+    }
+  }
+
+  repositories {
+    maven {
+      name = 'github'
+      url = "https://maven.pkg.github.com/" + System.getenv("GITHUB_REPOSITORY")
+
+      credentials {
+        username = System.getenv("GITHUB_USERNAME")
+        password = System.getenv("GITHUB_TOKEN")
+      }
+    }
+  }
+}
