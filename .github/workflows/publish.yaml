@@ -1,0 +1,154 @@
+name: Publish
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  JAVA_HOME: '' # force JAVA_HOME to be empty, so gradle will use the sdkman java version
+  GITHUB_TOKEN: ${{ github.token }}
+  GITHUB_USERNAME: x-access-token
+
+jobs:
+  prepare_tag:
+    name: Setup
+    runs-on: ubuntu-latest
+    outputs:
+      VERSION: ${{ steps.bump_version.outputs.new_tag }}
+      CHANGELOG: ${{ steps.github_release.outputs.changelog }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Bump version and push tag
+        id: bump_version
+        uses: anothrNick/github-tag-action@1.71.0
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          DEFAULT_BUMP: patch
+          DRY_RUN: true
+
+      - name: Set tag environment variable VERSION=${{ steps.bump_version.outputs.new_tag }}
+        run: echo "VERSION=${{ steps.bump_version.outputs.new_tag }}" >> $GITHUB_ENV
+
+  package:
+    name: Package and Publish
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+    env:
+      GITHUB_USERNAME: x-access-token
+    runs-on: ubuntu-latest
+    needs: [prepare_tag]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache SDKMAN
+        uses: actions/cache@v4
+        with:
+          path: ~/.sdkman
+          key: sdkman-${{ runner.os }}-${{ hashFiles('.sdkmanrc') }}
+
+      - name: Install SDKMAN
+        uses: sdkman/sdkman-action@b1f9b696c79148b66d3d3a06f7ea801820318d0f
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Build with Gradle
+        run: ./gradlew build
+
+      - name: Code vulnerability scan
+        uses: anchore/scan-action@v6
+        with:
+          path: '${{ github.workspace }}/build/libs'
+          fail-build: true
+          severity-cutoff: 'high'
+          output-format: table
+          only-fixed: false
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Test GitHub App Token
+        env:
+          GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }}
+        run: |
+          curl -H "Authorization: Bearer ${{ env.GITHUB_TOKEN }}" \
+               -H "Accept: application/vnd.github.v3+json" \
+               https://api.github.com/user
+
+      - name: Publish library ${{ needs.prepare_tag.outputs.VERSION }}
+        env:
+          GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: ./gradlew -Pversion=${{ needs.prepare_tag.outputs.VERSION }} publish
+
+  submit_dependencies:
+    name: Submit Dependencies
+    runs-on: ubuntu-latest
+    needs: [package]
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache SDKMAN
+        uses: actions/cache@v4
+        with:
+          path: ~/.sdkman
+          key: sdkman-${{ runner.os }}-${{ hashFiles('.sdkmanrc') }}
+
+      - name: Install SDKMAN
+        uses: sdkman/sdkman-action@b1f9b696c79148b66d3d3a06f7ea801820318d0f
+
+      - name: Gradle Dependency Submission
+        uses: mikepenz/gradle-dependency-submission@v1
+        with:
+          use-gradlew: false
+          gradle-build-module: |-
+            :
+          gradle-build-configuration: |-
+            compileClasspath
+          gradle-project-path: ./
+
+  release:
+    name: Release ${{ needs.prepare_tag.outputs.VERSION }}
+    runs-on: ubuntu-latest
+    needs: [package, prepare_tag]
+    permissions:
+      contents: write
+      pull-requests: read
+    steps:
+      - name: Create Tag
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ github.token }}
+          script: |
+            github.rest.git.createRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: "refs/tags/${{ needs.prepare_tag.outputs.VERSION }}",
+              sha: context.sha
+            })
+
+      - name: Create Changelog VERSION=${{ needs.prepare_tag.outputs.VERSION }}
+        uses: mikepenz/release-changelog-builder-action@v4
+        continue-on-error: true
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+
+      - name: Create Release
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ github.token }}
+          script: |
+            github.rest.repos.createRelease({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              tag_name: "${{ needs.prepare_tag.outputs.VERSION }}",
+              name: "${{ needs.prepare_tag.outputs.VERSION }}",
+              body: "${{ needs.prepare_tag.outputs.CHANGELOG }}",
+              generate_release_notes: true
+            })
