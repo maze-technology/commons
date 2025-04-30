@@ -5,23 +5,27 @@ import com.google.protobuf.Duration;
 import com.google.protobuf.Timestamp;
 import java.math.BigInteger;
 import java.time.Instant;
-import org.mapstruct.MapperConfig;
-import org.mapstruct.Named;
+import org.mapstruct.Mapper;
+import org.mapstruct.factory.Mappers;
 import tech.maze.dtos.commons.math.BigDecimal;
 
 /**
- * ProtobufMapperConfig is an interface that provides mapping configurations for Protobuf classes.
+ * ProtobufMapper is a mapper interface that provides mapping for Protobuf classes.
  */
-@MapperConfig
-public interface ProtobufMapperConfig {
+@Mapper(componentModel = "spring")
+public interface ProtobufMapper {
   /**
-   * Converts a Java {@link Instant} to a Protobuf {@link Timestamp}.
-   *
-   * @param instant the Java Instant to convert
-   * @return the converted Protobuf Timestamp
+   * Singleton instance of the ProtobufMapper.
    */
-  @Named("instantToProtobufTimestamp")
-  default Timestamp instantToProtobufTimestamp(Instant instant) {
+  ProtobufMapper INSTANCE = Mappers.getMapper(ProtobufMapper.class);
+
+  /**
+   * Converts an {@link Instant} to a {@link Timestamp}.
+   *
+   * @param instant The Java Instant to convert
+   * @return The corresponding Protobuf Timestamp, or null if the input is null
+   */
+  default Timestamp map(Instant instant) {
     if (instant == null) {
       return null;
     }
@@ -33,31 +37,26 @@ public interface ProtobufMapperConfig {
   }
 
   /**
-   * Converts a Protobuf {@link Timestamp} object to a Java {@link Instant} object.
+   * Converts a {@link Timestamp} to an {@link Instant}.
    *
-   * @param protobufTimestamp the Protobuf Timestamp to convert
-   * @return the converted Java Instant
+   * @param timestamp The Protobuf Timestamp to convert
+   * @return The corresponding Java Instant, or null if the input is null
    */
-  @Named("protobufTimestampToInstant")
-  default Instant protobufTimestampToInstant(Timestamp protobufTimestamp) {
-    if (protobufTimestamp == null) {
+  default Instant map(Timestamp timestamp) {
+    if (timestamp == null) {
       return null;
     }
 
-    return Instant.ofEpochSecond(
-      protobufTimestamp.getSeconds(),
-      protobufTimestamp.getNanos()
-    );
+    return Instant.ofEpochSecond(timestamp.getSeconds(), timestamp.getNanos());
   }
 
   /**
    * Converts a Java {@link java.time.Duration} to a Protobuf {@link Duration}.
    *
-   * @param duration the Java Duration to convert
-   * @return the converted Protobuf Duration
+   * @param duration The Java Duration to convert
+   * @return The corresponding Protobuf Duration, or null if the input is null
    */
-  @Named("durationToProtobufDuration")
-  default Duration durationToProtobufDuration(java.time.Duration duration) {
+  default Duration map(java.time.Duration duration) {
     if (duration == null) {
       return null;
     }
@@ -71,11 +70,10 @@ public interface ProtobufMapperConfig {
   /**
    * Converts a Protobuf {@link Duration} object to a Java {@link java.time.Duration} object.
    *
-   * @param protobufDuration the Protobuf Duration to convert
-   * @return the converted Java Duration
+   * @param protobufDuration The Protobuf Duration to convert
+   * @return The corresponding Java Duration, or null if the input is null
    */
-  @Named("protobufDurationToDuration")
-  default java.time.Duration protobufDurationToDuration(Duration protobufDuration) {
+  default java.time.Duration map(Duration protobufDuration) {
     if (protobufDuration == null) {
       return null;
     }
@@ -90,11 +88,10 @@ public interface ProtobufMapperConfig {
   /**
    * Converts a Java {@link java.math.BigDecimal} to a Protobuf {@link BigDecimal}.
    *
-   * @param bigDecimal the Java BigDecimal to convert
-   * @return the converted Protobuf BigDecimal
+   * @param bigDecimal The Java BigDecimal to convert
+   * @return The corresponding Protobuf BigDecimal, or null if the input is null
    */
-  @Named("bigDecimalToProtobufBigDecimal")
-  default BigDecimal bigDecimalToProtobufBigDecimal(java.math.BigDecimal bigDecimal) {
+  default BigDecimal map(java.math.BigDecimal bigDecimal) {
     if (bigDecimal == null) {
       return null;
     }
@@ -110,11 +107,10 @@ public interface ProtobufMapperConfig {
   /**
    * Converts a Protobuf {@link BigDecimal} object to a Java {@link java.math.BigDecimal} object.
    *
-   * @param protobufBigDecimal the Protobuf BigDecimal to convert
-   * @return the converted Java BigDecimal
+   * @param protobufBigDecimal The Protobuf BigDecimal to convert
+   * @return The corresponding Java BigDecimal, or null if the input is null
    */
-  @Named("protobufBigDecimalToBigDecimal")
-  default java.math.BigDecimal protobufBigDecimalToBigDecimal(BigDecimal protobufBigDecimal) {
+  default java.math.BigDecimal map(BigDecimal protobufBigDecimal) {
     if (protobufBigDecimal == null) {
       return null;
     }

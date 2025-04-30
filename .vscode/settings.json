@@ -1,5 +1,6 @@
 {
   "java.configuration.updateBuildConfiguration": "interactive",
   "java.checkstyle.configuration": "${workspaceFolder}/config/checkstyle/checkstyle.xml",
-  "makefile.configureOnOpen": false
+  "makefile.configureOnOpen": false,
+  "java.compile.nullAnalysis.mode": "automatic"
 }
