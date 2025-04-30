@@ -10,20 +10,20 @@ import org.mapstruct.factory.Mappers;
 import tech.maze.dtos.commons.math.BigDecimal;
 
 /**
- * ProtobufMapper is a mapper interface that provides mapping for Protobuf classes.
+ * BaseDtoMapper is a mapper interface that provides mapping for DTO classes.
  */
 @Mapper(componentModel = "spring")
-public interface ProtobufMapper {
+public interface BaseDtoMapper {
   /**
-   * Singleton instance of the ProtobufMapper.
+   * Singleton instance of the BaseDtoMapper.
    */
-  ProtobufMapper INSTANCE = Mappers.getMapper(ProtobufMapper.class);
+  BaseDtoMapper INSTANCE = Mappers.getMapper(BaseDtoMapper.class);
 
   /**
-   * Converts an {@link Instant} to a {@link Timestamp}.
+   * Converts an {@link Instant} to a DTO {@link Timestamp}.
    *
    * @param instant The Java Instant to convert
-   * @return The corresponding Protobuf Timestamp, or null if the input is null
+   * @return The corresponding DTO Timestamp, or null if the input is null
    */
   default Timestamp map(Instant instant) {
     if (instant == null) {
@@ -37,9 +37,9 @@ public interface ProtobufMapper {
   }
 
   /**
-   * Converts a {@link Timestamp} to an {@link Instant}.
+   * Converts a DTO {@link Timestamp} to an {@link Instant}.
    *
-   * @param timestamp The Protobuf Timestamp to convert
+   * @param timestamp The DTO Timestamp to convert
    * @return The corresponding Java Instant, or null if the input is null
    */
   default Instant map(Timestamp timestamp) {
@@ -51,10 +51,10 @@ public interface ProtobufMapper {
   }
 
   /**
-   * Converts a Java {@link java.time.Duration} to a Protobuf {@link Duration}.
+   * Converts a Java {@link java.time.Duration} to a DTO {@link Duration}.
    *
    * @param duration The Java Duration to convert
-   * @return The corresponding Protobuf Duration, or null if the input is null
+   * @return The corresponding DTO Duration, or null if the input is null
    */
   default Duration map(java.time.Duration duration) {
     if (duration == null) {
@@ -68,28 +68,28 @@ public interface ProtobufMapper {
   }
 
   /**
-   * Converts a Protobuf {@link Duration} object to a Java {@link java.time.Duration} object.
+   * Converts a DTO {@link Duration} object to a Java {@link java.time.Duration} object.
    *
-   * @param protobufDuration The Protobuf Duration to convert
+   * @param dtoDuration The DTO Duration to convert
    * @return The corresponding Java Duration, or null if the input is null
    */
-  default java.time.Duration map(Duration protobufDuration) {
-    if (protobufDuration == null) {
+  default java.time.Duration map(Duration dtoDuration) {
+    if (dtoDuration == null) {
       return null;
     }
 
     return java.time.Duration
       .ofSeconds(
-        protobufDuration.getSeconds(),
-        protobufDuration.getNanos()
+        dtoDuration.getSeconds(),
+        dtoDuration.getNanos()
       );
   }
 
   /**
-   * Converts a Java {@link java.math.BigDecimal} to a Protobuf {@link BigDecimal}.
+   * Converts a Java {@link java.math.BigDecimal} to a DTO {@link BigDecimal}.
    *
    * @param bigDecimal The Java BigDecimal to convert
-   * @return The corresponding Protobuf BigDecimal, or null if the input is null
+   * @return The corresponding DTO BigDecimal, or null if the input is null
    */
   default BigDecimal map(java.math.BigDecimal bigDecimal) {
     if (bigDecimal == null) {
@@ -105,17 +105,17 @@ public interface ProtobufMapper {
   }
 
   /**
-   * Converts a Protobuf {@link BigDecimal} object to a Java {@link java.math.BigDecimal} object.
+   * Converts a DTO {@link BigDecimal} object to a Java {@link java.math.BigDecimal} object.
    *
-   * @param protobufBigDecimal The Protobuf BigDecimal to convert
+   * @param dtoBigDecimal The DTO BigDecimal to convert
    * @return The corresponding Java BigDecimal, or null if the input is null
    */
-  default java.math.BigDecimal map(BigDecimal protobufBigDecimal) {
-    if (protobufBigDecimal == null) {
+  default java.math.BigDecimal map(BigDecimal dtoBigDecimal) {
+    if (dtoBigDecimal == null) {
       return null;
     }
 
-    final byte[] unscaledValueBytes = protobufBigDecimal
+    final byte[] unscaledValueBytes = dtoBigDecimal
         .getUnscaledValue()
         .toByteArray();
 
@@ -125,7 +125,7 @@ public interface ProtobufMapper {
 
     return new java.math.BigDecimal(
       unscaledValue,
-      protobufBigDecimal.getScale()
+      dtoBigDecimal.getScale()
     );
   }
 }
