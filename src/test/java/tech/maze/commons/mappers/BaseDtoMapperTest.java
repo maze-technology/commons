@@ -272,7 +272,8 @@ public class BaseDtoMapperTest {
   @DisplayName("Should return null when converting null Java BigInteger to DTO BigInteger")
   public void testMapNullBigIntegerToDtoBigInteger() {
     // When
-    final tech.maze.dtos.commons.math.BigInteger dtoBigInteger = mapper.map((java.math.BigInteger) null);
+    final tech.maze.dtos.commons.math.BigInteger dtoBigInteger = mapper
+        .map((java.math.BigInteger) null);
 
     // Then
     assertNull(dtoBigInteger);
@@ -317,7 +318,8 @@ public class BaseDtoMapperTest {
   @DisplayName("Should return null when converting null DTO BigInteger to Java BigInteger")
   public void testMapNullDtoBigIntegerToBigInteger() {
     // When
-    final java.math.BigInteger bigInteger = mapper.map((tech.maze.dtos.commons.math.BigInteger) null);
+    final java.math.BigInteger bigInteger = mapper
+        .map((tech.maze.dtos.commons.math.BigInteger) null);
 
     // Then
     assertNull(bigInteger);
