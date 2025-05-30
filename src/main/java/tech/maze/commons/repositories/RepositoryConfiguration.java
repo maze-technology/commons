@@ -11,5 +11,10 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
     entityManagerFactoryRef = "defaultEntityManagerFactory",
     transactionManagerRef = "defaultTransactionManager")
 public class RepositoryConfiguration {
-
+  /**
+   * Default constructor for RepositoryConfiguration.
+   * Creates a new instance of the repository configuration.
+   */
+  public RepositoryConfiguration() {
+  }
 }
