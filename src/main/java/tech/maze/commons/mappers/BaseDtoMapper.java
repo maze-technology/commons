@@ -3,11 +3,11 @@ package tech.maze.commons.mappers;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.Duration;
 import com.google.protobuf.Timestamp;
-import java.math.BigInteger;
 import java.time.Instant;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 import tech.maze.dtos.commons.math.BigDecimal;
+import tech.maze.dtos.commons.math.BigInteger;
 
 /**
  * BaseDtoMapper is a mapper interface that provides mapping for DTO classes.
@@ -98,9 +98,12 @@ public interface BaseDtoMapper {
 
     return BigDecimal.newBuilder()
       .setScale(bigDecimal.scale())
-      .setUnscaledValue(ByteString.copyFrom(bigDecimal
-        .unscaledValue()
-        .toByteArray()))
+      .setUnscaledValue(BigInteger
+          .newBuilder()
+          .setTwosComp(ByteString.copyFrom(bigDecimal
+              .unscaledValue()
+              .toByteArray()))
+          .build())
       .build();
   }
 
@@ -117,15 +120,54 @@ public interface BaseDtoMapper {
 
     final byte[] unscaledValueBytes = dtoBigDecimal
         .getUnscaledValue()
+        .getTwosComp()
         .toByteArray();
 
-    final BigInteger unscaledValue = unscaledValueBytes.length == 0
-        ? BigInteger.ZERO
-        : new BigInteger(unscaledValueBytes);
+    final java.math.BigInteger unscaledValue = unscaledValueBytes.length == 0
+        ? java.math.BigInteger.ZERO
+        : new java.math.BigInteger(unscaledValueBytes);
 
     return new java.math.BigDecimal(
       unscaledValue,
       dtoBigDecimal.getScale()
     );
+  }
+
+  /**
+   * Converts a Java {@link java.math.BigInteger} to a DTO {@link BigInteger}.
+   *
+   * @param bigInteger The Java BigInteger to convert
+   * @return The corresponding DTO BigInteger, or null if the input is null
+   */
+  default BigInteger map(java.math.BigInteger bigInteger) {
+    if (bigInteger == null) {
+      return null;
+    }
+
+    return BigInteger.newBuilder()
+        .setTwosComp(ByteString
+            .copyFrom(bigInteger
+                .toByteArray()))
+        .build();
+  }
+
+  /**
+   * Converts a DTO {@link BigInteger} object to a Java {@link java.math.BigInteger} object.
+   *
+   * @param dtoBigInteger The DTO BigInteger to convert
+   * @return The corresponding Java BigInteger, or null if the input is null
+   */
+  default java.math.BigInteger map(BigInteger dtoBigInteger) {
+    if (dtoBigInteger == null) {
+      return null;
+    }
+
+    final byte[] twosCompBytes = dtoBigInteger
+        .getTwosComp()
+        .toByteArray();
+
+    return twosCompBytes.length == 0
+        ? java.math.BigInteger.ZERO
+        : new java.math.BigInteger(twosCompBytes);
   }
 }

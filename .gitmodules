@@ -1,0 +1,3 @@
+[submodule "scripts/smithy-protovalidate"]
+	path = scripts/smithy-protovalidate
+	url = git@github.com:maze-technology/smithy-protovalidate.git
