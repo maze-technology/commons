@@ -1,0 +1,11 @@
+version: v2
+inputs:
+  - directory: build/generated/proto
+plugins:
+  - remote: buf.build/protocolbuffers/java:v31.0
+    out: build/generated/source
+managed:
+  enabled: true
+  override:
+    - file_option: java_package_prefix
+      value: ''
