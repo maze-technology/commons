@@ -25,6 +25,12 @@ env:
 jobs:
   build_scan:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: read
+      checks: write
+      issues: write
+      pull-requests: write
     steps:
       - uses: actions/checkout@v4
         with:
