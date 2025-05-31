@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<included>
+  <appender name="json" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+      <providers>
+        <logLevel>
+          <fieldName>level</fieldName>
+        </logLevel>
+        <timestamp>
+          <timeZone>UTC</timeZone>
+          <pattern>[UNIX_TIMESTAMP_AS_NUMBER]</pattern>
+        </timestamp>
+        <threadName>
+          <fieldName>thread</fieldName>
+        </threadName>
+
+        <loggerName>
+          <fieldName>logger</fieldName>
+        </loggerName>
+        <mdc>
+          <fieldName>maze</fieldName>
+        </mdc>
+        <mdc></mdc>
+        <message>
+          <fieldName>message</fieldName>
+        </message>
+        <stackTrace>
+          <throwableConverter class="net.logstash.logback.stacktrace.ShortenedThrowableConverter">
+            <maxDepthPerThrowable>5</maxDepthPerThrowable>
+            <maxLength>2048</maxLength>
+            <shortenedClassNameLength>20</shortenedClassNameLength>
+            <exclude>^sun\.reflect\..*\.invoke</exclude>
+            <exclude>^net\.sf\.cglib\.proxy\.MethodProxy\.invoke</exclude>
+            <rootCauseFirst>true</rootCauseFirst>
+          </throwableConverter>
+        </stackTrace>
+      </providers>
+    </encoder>
+  </appender>
+</included>

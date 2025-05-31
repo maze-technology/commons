@@ -73,7 +73,9 @@ public class DatabaseConfiguration {
   @ConfigurationProperties("spring.datasource.default.configuration")
   public DataSource defaultDataSource(DataSourceProperties dataSourceProperties) {
     return dataSourceProperties
-      .initializeDataSourceBuilder().type(HikariDataSource.class).build();
+        .initializeDataSourceBuilder()
+        // .type(HikariDataSource.class)
+        .build();
   }
 
   /**
