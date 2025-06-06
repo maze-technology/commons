@@ -14,7 +14,8 @@ import org.springframework.context.annotation.Configuration;
 public class ProtoValidateConfig {
   /**
    * Creates and configures a new ProtoValidate Validator instance.
-   * This validator can be used to validate Protocol Buffer messages against their schema definitions.
+   * This validator can be used to validate Protocol Buffer messages against their schema
+   * definitions.
    *
    * @return A configured Validator instance
    */
