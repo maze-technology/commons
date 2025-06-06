@@ -19,6 +19,10 @@ ext {
   protocPluginVersion = "1.70.0"
   protobufJavaVersion = "4.31.0"
   testContainersVersion = "1.20.5"
+  protoValidateVersion = "0.9.0"
+  grpcVersion = "1.73.0"
+  grpcSpringBootVersion = "3.1.0.RELEASE"
+  jakartaValidationVersion = "3.1.1"
 }
 
 repositories {
@@ -52,6 +56,21 @@ dependencies {
   // Protobuf
   implementation "com.google.protobuf:protobuf-java:$protobufJavaVersion"
 
+  // ProtobValidate
+  implementation "build.buf:protovalidate:$protoValidateVersion"
+
+  // Spring Boot GRPC Server
+  implementation "net.devh:grpc-server-spring-boot-starter:$grpcSpringBootVersion"
+
+  // GRPC
+  implementation "io.grpc:grpc-core:$grpcVersion"
+  implementation "io.grpc:grpc-netty:$grpcVersion"
+  implementation "io.grpc:grpc-protobuf:$grpcVersion"
+  implementation "io.grpc:grpc-stub:$grpcVersion"
+
+  // Jakarta Validation
+  implementation "jakarta.validation:jakarta.validation-api:$jakartaValidationVersion"
+
   // MapStruct
   implementation "org.mapstruct:mapstruct:$mapStructVersion"
   annotationProcessor "org.mapstruct:mapstruct-processor:$mapStructVersion"
@@ -67,7 +86,6 @@ dependencies {
   testImplementation "org.testcontainers:testcontainers"
   testImplementation "org.testcontainers:localstack"
   testImplementation "com.h2database:h2"
-
   testImplementation "org.junit.jupiter:junit-jupiter"
   testImplementation "org.junit.jupiter:junit-jupiter-api"
   testImplementation "org.junit.jupiter:junit-jupiter-engine"
