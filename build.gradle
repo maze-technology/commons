@@ -17,7 +17,7 @@ ext {
   mapStructVersion = "1.6.3"
   springBootVersion = "3.4.3"
   protocPluginVersion = "1.70.0"
-  protobufJavaVersion = "4.31.0"
+  protobufJavaVersion = "4.31.1"
   testContainersVersion = "1.21.2"
   protoValidateVersion = "0.9.0"
   grpcVersion = "1.73.0"
