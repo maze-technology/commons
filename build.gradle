@@ -15,7 +15,7 @@ ext {
   junitVersion = "5.13.1"
   wiremockVersion = "3.0.1"
   mapStructVersion = "1.6.3"
-  springBootVersion = "3.4.3"
+  springBootVersion = "3.5.3"
   protocPluginVersion = "1.70.0"
   protobufJavaVersion = "4.31.1"
   testContainersVersion = "1.21.2"
