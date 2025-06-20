@@ -19,7 +19,7 @@ ext {
   protocPluginVersion = "1.70.0"
   protobufJavaVersion = "4.31.1"
   testContainersVersion = "1.21.2"
-  protoValidateVersion = "0.9.0"
+  protoValidateVersion = "0.12.0"
   grpcVersion = "1.73.0"
   grpcSpringBootVersion = "3.1.0.RELEASE"
   jakartaValidationVersion = "3.1.1"
