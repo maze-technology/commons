@@ -6,7 +6,6 @@ plugins {
   id("com.github.spotbugs") version "6.2.0"
   id("org.springframework.boot") version "3.5.3"
   id("io.spring.dependency-management") version "1.1.7"
-  id("com.google.protobuf") version "0.9.5"
 }
 
 group = "tech.maze"
@@ -16,13 +15,15 @@ ext {
   wiremockVersion = "3.0.1"
   mapStructVersion = "1.6.3"
   springBootVersion = "3.5.3"
-  protocPluginVersion = "1.70.0"
-  protobufJavaVersion = "4.31.1"
-  testContainersVersion = "1.21.2"
   protoValidateVersion = "0.12.0"
-  grpcVersion = "1.73.0"
   grpcSpringBootVersion = "3.1.0.RELEASE"
   jakartaValidationVersion = "3.1.1"
+  jakartaAnnotationVersion = "3.0.0"
+  jakartaPersistenceVersion = "3.2.0"
+  lombokVersion = "1.18.38"
+  hikariCpVersion = "6.3.0"
+  springDataJpaVersion = "3.5.1"
+  h2Version = "2.3.232"
 }
 
 repositories {
@@ -42,62 +43,54 @@ repositories {
 dependencyManagement {
   imports {
     mavenBom "org.springframework.boot:spring-boot-dependencies:$springBootVersion"
-    mavenBom "org.testcontainers:testcontainers-bom:$testContainersVersion"
     mavenBom "org.junit:junit-bom:$junitVersion"
   }
 }
 
 dependencies {
   // Spring Boot
-  implementation "org.springframework.boot:spring-boot-starter"
-  implementation "org.springframework.boot:spring-boot-starter-data-jpa"
-  implementation "com.fasterxml.jackson.core:jackson-databind"
+  implementation "org.springframework.boot:spring-boot"
+  implementation "org.springframework.data:spring-data-jpa:$springDataJpaVersion"
 
-  // Protobuf
-  implementation "com.google.protobuf:protobuf-java:$protobufJavaVersion"
+  // HikariCP
+  implementation "com.zaxxer:HikariCP:$hikariCpVersion"
 
   // ProtobValidate
   implementation "build.buf:protovalidate:$protoValidateVersion"
 
-  // Spring Boot GRPC Server
+  // Spring Boot gRPC Server
   implementation "net.devh:grpc-server-spring-boot-starter:$grpcSpringBootVersion"
 
-  // GRPC
-  implementation "io.grpc:grpc-core:$grpcVersion"
-  implementation "io.grpc:grpc-netty:$grpcVersion"
-  implementation "io.grpc:grpc-protobuf:$grpcVersion"
-  implementation "io.grpc:grpc-stub:$grpcVersion"
-
-  // Jakarta Validation
+  // Jakarta
   implementation "jakarta.validation:jakarta.validation-api:$jakartaValidationVersion"
+  implementation "jakarta.annotation:jakarta.annotation-api:$jakartaAnnotationVersion"
+  implementation "jakarta.persistence:jakarta.persistence-api:$jakartaPersistenceVersion"
 
   // MapStruct
   implementation "org.mapstruct:mapstruct:$mapStructVersion"
   annotationProcessor "org.mapstruct:mapstruct-processor:$mapStructVersion"
 
   // Lombok
-  compileOnly "org.projectlombok:lombok"
-  annotationProcessor "org.projectlombok:lombok"
-  implementation "org.slf4j:slf4j-api"
+  compileOnly "org.projectlombok:lombok:$lombokVersion"
+  annotationProcessor "org.projectlombok:lombok:$lombokVersion"
 
-  // JUnit Test Framework
+  // Test Framework
   testImplementation "org.springframework.boot:spring-boot-starter-test"
-  testImplementation "org.testcontainers:junit-jupiter"
-  testImplementation "org.testcontainers:testcontainers"
-  testImplementation "org.testcontainers:localstack"
-  testImplementation "com.h2database:h2"
   testImplementation "org.junit.jupiter:junit-jupiter"
   testImplementation "org.junit.jupiter:junit-jupiter-api"
   testImplementation "org.junit.jupiter:junit-jupiter-engine"
 
-  // Mock Frameworks
+  // Mock Framework
   testImplementation "com.github.tomakehurst:wiremock-jre8-standalone:${wiremockVersion}"
+
+  // H2 Test Database
+  testImplementation "com.h2database:h2:$h2Version"
 }
 
 checkstyle {
   toolVersion = "10.21.3"
   maxWarnings = 0
-  ignoreFailures = true
+  ignoreFailures = false
   sourceSets = [project.sourceSets.main]
 }
 
@@ -108,7 +101,7 @@ spotbugs {
   projectName = name
   maxHeapSize = "512m"
   showProgress = false
-  ignoreFailures = true
+  ignoreFailures = false
   showStackTraces = true
   effort = Effort.valueOf("DEFAULT")
   reportLevel = Confidence.valueOf("DEFAULT")
@@ -169,7 +162,7 @@ jacocoTestReport {
 }
 
 tasks.named('jacocoTestReport') {
-  dependsOn /*'bootStartScripts',*/ 'compileIntegrationTestJava', 'integrationTest', 'processIntegrationTestResources'/*, 'startScripts'*/, ':javadoc'
+  dependsOn 'compileIntegrationTestJava', 'integrationTest', 'processIntegrationTestResources', ':javadoc'
 }
 
 tasks.named('resolveMainClassName').configure {

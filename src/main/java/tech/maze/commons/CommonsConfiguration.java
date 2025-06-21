@@ -1,5 +1,6 @@
 package tech.maze.commons;
 
+import lombok.NoArgsConstructor;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
@@ -10,11 +11,8 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 @ComponentScan("tech.maze.commons")
+@NoArgsConstructor
+@SuppressWarnings("doclint:missing")
 public class CommonsConfiguration {
-  /**
-   * Default constructor for the CommonsConfiguration class.
-   */
-  public CommonsConfiguration() {
 
-  }
 }

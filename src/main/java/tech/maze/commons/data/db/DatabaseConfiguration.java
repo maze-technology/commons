@@ -25,6 +25,7 @@ import org.springframework.transaction.PlatformTransactionManager;
     entityManagerFactoryRef = "defaultEntityManagerFactory",
     transactionManagerRef = "defaultTransactionManager")
 @ConditionalOnProperty(name = "spring.datasource.enabled", havingValue = "true")
+@SuppressWarnings("doclint:missing")
 public class DatabaseConfiguration {
   /**
    * Creates and configures the data source properties.

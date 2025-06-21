@@ -2,6 +2,21 @@
 
 This repository contains the commons elements and generates the corresponding libraries
 
+[![Continuous Integration (CI)](https://github.com/maze-technology/commons/actions/workflows/build-scan.yaml/badge.svg?branch=main)](https://github.com/maze-technology/commons/actions/workflows/build-scan.yaml)
+
+## Quality
+
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=maze-technology_commons&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=maze-technology_commons)
+[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=maze-technology_commons&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=maze-technology_commons)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=maze-technology_commons&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=maze-technology_commons)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=maze-technology_commons&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=maze-technology_commons)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=maze-technology_commons&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=maze-technology_commons)
+[![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=maze-technology_commons&metric=sqale_index)](https://sonarcloud.io/summary/new_code?id=maze-technology_commons)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=maze-technology_commons&metric=coverage)](https://sonarcloud.io/summary/new_code?id=maze-technology_commons)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=maze-technology_commons&metric=bugs)](https://sonarcloud.io/summary/new_code?id=maze-technology_commons)
+[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=maze-technology_commons&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=maze-technology_commons)
+[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=maze-technology_commons&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=maze-technology_commons)
+
 ## Setup
 
 - Clone this repository with submodules

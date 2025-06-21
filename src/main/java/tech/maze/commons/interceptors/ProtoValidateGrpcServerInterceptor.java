@@ -35,6 +35,7 @@ import org.springframework.stereotype.Component;
 @Component
 @GrpcGlobalServerInterceptor
 @RequiredArgsConstructor
+@SuppressWarnings("doclint:missing")
 public class ProtoValidateGrpcServerInterceptor implements ServerInterceptor {
   private final Validator validator;
 
