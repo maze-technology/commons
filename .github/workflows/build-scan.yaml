@@ -101,6 +101,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           min-coverage-overall: 80
           min-coverage-changed-files: 80
+          continue-on-error: false
 
       - name: Code vulnerability scan
         uses: anchore/scan-action@v6
