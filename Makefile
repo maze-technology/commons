@@ -8,18 +8,23 @@ inject-protovalidate-validations:
 buf-codegen:
 	@buf generate
 
+pre-build: generate-proto inject-protovalidate-validations buf-codegen
+
 build-gradle:
 	@./gradlew build
 
-build: generate-proto inject-protovalidate-validations buf-codegen build-gradle
+build: pre-build build-gradle
 
 format-smithy:
 	@smithy format src/main/smithy
 
 format: format-smithy
 
-test:
+test: pre-build
 	@./gradlew test
+
+test-coverage-verification: pre-build
+	@./gradlew jacocoTestCoverageVerification
 
 clean:
 	@./gradlew clean

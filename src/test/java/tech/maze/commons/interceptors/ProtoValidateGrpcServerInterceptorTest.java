@@ -38,6 +38,18 @@ class ProtoValidateGrpcServerInterceptorTest {
   @Mock
   private Message message;
 
+  @Mock
+  private Object nonProtobufMessage;
+
+  @Mock
+  private ServerCall<Object, Object> serverCallForNonProtobuf;
+
+  @Mock
+  private ServerCallHandler<Object, Object> nextForNonProtobuf;
+
+  @Mock
+  private ServerCall.Listener<Object> listenerForNonProtobuf;
+
   @BeforeEach
   void setUp() {
       MockitoAnnotations.openMocks(this);
@@ -81,5 +93,44 @@ class ProtoValidateGrpcServerInterceptorTest {
     verify(serverCall).close(argThat(status ->
         status.getCode() == io.grpc.Status.INTERNAL.getCode()), any(Metadata.class));
     verify(listener, never()).onMessage(any());
+  }
+
+  @Test
+  @DisplayName("Should reject with INTERNAL error when message is not protobuf")
+  void interceptCall_WithNonProtobufMessage_ShouldRejectWithInternalError() {
+    // Arrange
+    when(nextForNonProtobuf.startCall(any(), any())).thenReturn(listenerForNonProtobuf);
+    doNothing().when(serverCallForNonProtobuf).close(any(), any());
+
+    // Act
+    final ServerCall.Listener<Object> result = interceptor.interceptCall(serverCallForNonProtobuf, headers, nextForNonProtobuf);
+    result.onMessage(nonProtobufMessage);
+
+    // Assert
+    assertNotNull(result);
+    verify(serverCallForNonProtobuf).close(any(), any());
+    verify(listenerForNonProtobuf, never()).onMessage(any());
+  }
+
+  @Test
+  @DisplayName("Should call onHalfClose when not rejected")
+  void onHalfClose_WhenNotRejected_ShouldCallDelegate() {
+    // Act
+    final ServerCall.Listener<Message> result = interceptor.interceptCall(serverCall, headers, next);
+    result.onHalfClose();
+
+    // Assert
+    verify(listener).onHalfClose();
+  }
+
+  @Test
+  @DisplayName("Should call onCancel when not rejected")
+  void onCancel_WhenNotRejected_ShouldCallDelegate() {
+    // Act
+    final ServerCall.Listener<Message> result = interceptor.interceptCall(serverCall, headers, next);
+    result.onCancel();
+
+    // Assert
+    verify(listener).onCancel();
   }
 }
