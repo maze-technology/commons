@@ -102,6 +102,11 @@ jobs:
           min-coverage-overall: 80
           min-coverage-changed-files: 80
 
+      - name: Verify Test Coverage
+        if: github.event_name == 'pull_request'
+        run: make test-coverage-verification
+        continue-on-error: false
+
       - name: Code vulnerability scan
         uses: anchore/scan-action@v6
         with:
