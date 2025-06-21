@@ -23,7 +23,7 @@ format: format-smithy
 test: pre-build
 	@./gradlew test
 
-test-coverage-verification: pre-build
+test-coverage-verification: test
 	@./gradlew jacocoTestCoverageVerification
 
 clean:

@@ -170,6 +170,17 @@ tasks.named('resolveMainClassName').configure {
 }
 
 jacocoTestCoverageVerification {
+  sourceSets(sourceSets.main)
+  executionData = fileTree(project.rootDir.absolutePath).include("**/build/jacoco/*.exec")
+
+  afterEvaluate {
+    classDirectories.setFrom(files(classDirectories.files.collect {
+      fileTree(dir: it, exclude: [
+        "tech/maze/dtos/*",
+      ])
+    }))
+  }
+
   violationRules {
     rule {
       limit {

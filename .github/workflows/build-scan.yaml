@@ -104,7 +104,7 @@ jobs:
 
       - name: Verify Test Coverage
         if: github.event_name == 'pull_request'
-        run: ./gradlew jacocoTestCoverageVerification
+        run: make test-coverage-verification
         continue-on-error: false
 
       - name: Code vulnerability scan
