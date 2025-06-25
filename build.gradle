@@ -11,7 +11,7 @@ plugins {
 group = "tech.maze"
 
 ext {
-  junitVersion = "5.13.1"
+  junitVersion = "5.13.2"
   wiremockVersion = "3.0.1"
   mapStructVersion = "1.6.3"
   springBootVersion = "3.5.3"
