@@ -150,6 +150,7 @@ test {
 }
 
 jacocoTestReport {
+  dependsOn delombok
   sourceSets(sourceSets.main)
   executionData = fileTree(project.rootDir.absolutePath).include("**/build/jacoco/*.exec")
 
@@ -165,14 +166,6 @@ jacocoTestReport {
     xml.required = true
     csv.required = false
   }
-}
-
-tasks.named('jacocoTestReport') {
-  dependsOn 'compileIntegrationTestJava', 'integrationTest', 'processIntegrationTestResources', ':javadoc'
-}
-
-tasks.named('resolveMainClassName').configure {
-  enabled = false
 }
 
 jacocoTestCoverageVerification {
@@ -223,10 +216,6 @@ tasks.withType(Javadoc).configureEach {
 
 tasks.named("checkstyleMain", Checkstyle) {
   source = source.filter { !it.absolutePath.contains("tech/maze/dtos") }
-}
-
-tasks.named('check') {
-  dependsOn testing.suites.integrationTest
 }
 
 sourceSets {
