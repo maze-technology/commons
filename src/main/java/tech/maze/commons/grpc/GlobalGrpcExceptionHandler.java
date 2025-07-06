@@ -12,7 +12,6 @@ import net.devh.boot.grpc.server.advice.GrpcExceptionHandler;
  * argument exceptions.
  */
 @GrpcAdvice
-@SuppressWarnings("doclint:missing")
 public class GlobalGrpcExceptionHandler {
   /**
    * Handle ConstraintViolationException raised by validation and pipe it to GRPC.
