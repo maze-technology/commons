@@ -11,7 +11,6 @@ import org.springframework.context.annotation.Configuration;
  * which is used for validating Protocol Buffer messages.
  */
 @Configuration
-@SuppressWarnings("doclint:missing")
 public class ProtoValidateConfig {
   /**
    * Creates and configures a new ProtoValidate Validator instance.

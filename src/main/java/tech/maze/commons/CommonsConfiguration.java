@@ -12,7 +12,6 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @ComponentScan("tech.maze.commons")
 @NoArgsConstructor
-@SuppressWarnings("doclint:missing")
 public class CommonsConfiguration {
 
 }

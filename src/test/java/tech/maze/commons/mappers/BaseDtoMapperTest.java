@@ -8,13 +8,12 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.Duration;
 import com.google.protobuf.Timestamp;
-import java.math.BigInteger;
 import java.time.Instant;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import tech.maze.dtos.commons.math.BigDecimal;
-import tech.maze.dtos.commons.math.BigInteger.Builder;
+import tech.maze.dtos.commons.math.BigInteger;
 
 /**
  * Unit tests for the BaseDtoMapper class.
@@ -183,9 +182,12 @@ public class BaseDtoMapperTest {
   @DisplayName("Should convert DTO BigDecimal to Java BigDecimal")
   public void testMapDtoBigDecimalToBigDecimal() {
     // Given
-    final tech.maze.dtos.commons.math.BigInteger dtoBigInteger = tech.maze.dtos.commons.math.BigInteger.newBuilder()
-        .setTwosComp(ByteString.copyFrom(new java.math.BigInteger("123456789").toByteArray()))
-        .build();
+    final BigInteger dtoBigInteger =
+        BigInteger.newBuilder()
+            .setTwosComp(ByteString.copyFrom(
+                new java.math.BigInteger("123456789").toByteArray()
+            ))
+            .build();
     final BigDecimal dtoBigDecimal = BigDecimal.newBuilder()
         .setScale(4)
         .setUnscaledValue(dtoBigInteger)
@@ -198,7 +200,9 @@ public class BaseDtoMapperTest {
     assertNotNull(bigDecimal);
     assertEquals(dtoBigDecimal.getScale(), bigDecimal.scale());
     assertEquals(
-        new java.math.BigInteger(dtoBigDecimal.getUnscaledValue().getTwosComp().toByteArray()),
+        new java.math.BigInteger(
+            dtoBigDecimal.getUnscaledValue().getTwosComp().toByteArray()
+        ),
         bigDecimal.unscaledValue()
     );
   }
@@ -207,7 +211,7 @@ public class BaseDtoMapperTest {
   @DisplayName("Should handle empty unscaled value in DTO BigDecimal conversion")
   public void testMapDtoBigDecimalWithEmptyUnscaledValueToBigDecimal() {
     // Given
-    final tech.maze.dtos.commons.math.BigInteger dtoBigInteger = tech.maze.dtos.commons.math.BigInteger.newBuilder()
+    final BigInteger dtoBigInteger = BigInteger.newBuilder()
         .setTwosComp(ByteString.EMPTY)
         .build();
     final BigDecimal dtoBigDecimal = BigDecimal.newBuilder()
@@ -241,7 +245,7 @@ public class BaseDtoMapperTest {
     final java.math.BigInteger bigInteger = new java.math.BigInteger("123456789");
 
     // When
-    final tech.maze.dtos.commons.math.BigInteger dtoBigInteger = mapper.map(bigInteger);
+    final BigInteger dtoBigInteger = mapper.map(bigInteger);
 
     // Then
     assertNotNull(dtoBigInteger);
@@ -258,7 +262,7 @@ public class BaseDtoMapperTest {
     final java.math.BigInteger bigInteger = java.math.BigInteger.ZERO;
 
     // When
-    final tech.maze.dtos.commons.math.BigInteger dtoBigInteger = mapper.map(bigInteger);
+    final BigInteger dtoBigInteger = mapper.map(bigInteger);
 
     // Then
     assertNotNull(dtoBigInteger);
@@ -272,7 +276,7 @@ public class BaseDtoMapperTest {
   @DisplayName("Should return null when converting null Java BigInteger to DTO BigInteger")
   public void testMapNullBigIntegerToDtoBigInteger() {
     // When
-    final tech.maze.dtos.commons.math.BigInteger dtoBigInteger = mapper
+    final BigInteger dtoBigInteger = mapper
         .map((java.math.BigInteger) null);
 
     // Then
@@ -283,9 +287,12 @@ public class BaseDtoMapperTest {
   @DisplayName("Should convert DTO BigInteger to Java BigInteger")
   public void testMapDtoBigIntegerToBigInteger() {
     // Given
-    final tech.maze.dtos.commons.math.BigInteger dtoBigInteger = tech.maze.dtos.commons.math.BigInteger.newBuilder()
-        .setTwosComp(ByteString.copyFrom(new java.math.BigInteger("123456789").toByteArray()))
-        .build();
+    final BigInteger dtoBigInteger =
+        BigInteger.newBuilder()
+            .setTwosComp(ByteString.copyFrom(
+                new java.math.BigInteger("123456789").toByteArray()
+            ))
+            .build();
 
     // When
     final java.math.BigInteger bigInteger = mapper.map(dtoBigInteger);
@@ -293,7 +300,9 @@ public class BaseDtoMapperTest {
     // Then
     assertNotNull(bigInteger);
     assertEquals(
-        new java.math.BigInteger(dtoBigInteger.getTwosComp().toByteArray()),
+        new java.math.BigInteger(
+            dtoBigInteger.getTwosComp().toByteArray()
+        ),
         bigInteger
     );
   }
@@ -302,7 +311,7 @@ public class BaseDtoMapperTest {
   @DisplayName("Should handle empty twos comp in DTO BigInteger conversion")
   public void testMapDtoBigIntegerWithEmptyTwosCompToBigInteger() {
     // Given
-    final tech.maze.dtos.commons.math.BigInteger dtoBigInteger = tech.maze.dtos.commons.math.BigInteger.newBuilder()
+    final BigInteger dtoBigInteger = BigInteger.newBuilder()
         .setTwosComp(ByteString.EMPTY)
         .build();
 
@@ -319,7 +328,7 @@ public class BaseDtoMapperTest {
   public void testMapNullDtoBigIntegerToBigInteger() {
     // When
     final java.math.BigInteger bigInteger = mapper
-        .map((tech.maze.dtos.commons.math.BigInteger) null);
+        .map((BigInteger) null);
 
     // Then
     assertNull(bigInteger);

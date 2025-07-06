@@ -26,6 +26,12 @@ test: pre-build
 test-coverage-verification: test
 	@./gradlew jacocoTestCoverageVerification
 
+spotbugs: pre-build
+	@./gradlew spotbugsMain spotbugsTest spotbugsIntegrationTest
+
+checkstyle: pre-build
+	@./gradlew checkstyleMain checkstyleTest checkstyleIntegrationTest
+
 clean:
 	@./gradlew clean
 

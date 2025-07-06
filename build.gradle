@@ -6,6 +6,7 @@ plugins {
   id("com.github.spotbugs") version "6.2.1"
   id("org.springframework.boot") version "3.5.3"
   id("io.spring.dependency-management") version "1.1.7"
+  id("io.freefair.lombok") version "8.14"
 }
 
 group = "tech.maze"
@@ -24,6 +25,7 @@ ext {
   hikariCpVersion = "6.3.0"
   springDataJpaVersion = "3.5.1"
   h2Version = "2.3.232"
+  spotbugsVersion = "4.9.3"
 }
 
 repositories {
@@ -74,6 +76,11 @@ dependencies {
   compileOnly "org.projectlombok:lombok:$lombokVersion"
   annotationProcessor "org.projectlombok:lombok:$lombokVersion"
 
+  // SpotBugs
+  compileOnly "com.github.spotbugs:spotbugs-annotations:$spotbugsVersion"
+  spotbugs "com.github.spotbugs:spotbugs:$spotbugsVersion"
+  spotbugs "com.github.spotbugs:spotbugs-annotations:$spotbugsVersion"
+
   // Test Framework
   testImplementation "org.springframework.boot:spring-boot-starter-test"
   testImplementation "org.junit.jupiter:junit-jupiter"
@@ -91,7 +98,6 @@ checkstyle {
   toolVersion = "10.21.3"
   maxWarnings = 0
   ignoreFailures = false
-  sourceSets = [project.sourceSets.main]
 }
 
 import com.github.spotbugs.snom.Confidence
@@ -211,6 +217,8 @@ tasks.withType(Javadoc).configureEach {
   source = source.filter {
     !it.absolutePath.startsWith("${buildDir.absolutePath}/generated/")
   }
+
+  dependsOn delombok
 }
 
 tasks.named("checkstyleMain", Checkstyle) {
