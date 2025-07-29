@@ -22,7 +22,7 @@ ext {
   jakartaAnnotationVersion = "3.0.0"
   jakartaPersistenceVersion = "3.2.0"
   lombokVersion = "1.18.38"
-  hikariCpVersion = "6.3.2"
+  hikariCpVersion = "7.0.0"
   springDataJpaVersion = "3.5.2"
   h2Version = "2.3.232"
   spotbugsVersion = "4.9.3"
