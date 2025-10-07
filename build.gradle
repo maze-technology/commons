@@ -3,7 +3,7 @@ plugins {
   id("checkstyle")
   id("java-library")
   id("maven-publish")
-  id("com.github.spotbugs") version "6.2.4"
+  id("com.github.spotbugs") version "6.4.2"
   id("org.springframework.boot") version "3.5.6"
   id("io.spring.dependency-management") version "1.1.7"
   id("io.freefair.lombok") version "9.0.0"
