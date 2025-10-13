@@ -25,7 +25,7 @@ ext {
   hikariCpVersion             = "7.0.2"
   springDataJpaVersion        = "3.5.4"
   h2Version                   = "2.4.240"
-  spotbugsVersion             = "4.9.4"
+  spotbugsVersion             = "4.9.6"
 }
 
 repositories {
