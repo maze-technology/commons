@@ -12,20 +12,20 @@ plugins {
 group = "tech.maze"
 
 ext {
-  junitVersion = "6.0.0"
-  wiremockVersion = "3.0.1"
-  mapStructVersion = "1.6.3"
-  springBootVersion = "3.5.6"
-  protoValidateVersion = "1.0.0"
-  grpcSpringBootVersion = "3.1.0.RELEASE"
-  jakartaValidationVersion = "3.1.1"
-  jakartaAnnotationVersion = "3.0.0"
-  jakartaPersistenceVersion = "3.2.0"
-  lombokVersion = "1.18.42"
-  hikariCpVersion = "7.0.2"
-  springDataJpaVersion = "3.5.4"
-  h2Version = "2.4.240"
-  spotbugsVersion = "4.9.4"
+  junitVersion                = "6.0.0"
+  wiremockVersion             = "3.0.1"
+  mapStructVersion            = "1.6.3"
+  springBootVersion           = "3.5.6"
+  protoValidateVersion        = "1.0.0"
+  grpcSpringBootVersion       = "3.1.0.RELEASE"
+  jakartaValidationVersion    = "3.1.1"
+  jakartaAnnotationVersion    = "3.0.0"
+  jakartaPersistenceVersion   = "3.2.0"
+  lombokVersion               = "1.18.42"
+  hikariCpVersion             = "7.0.2"
+  springDataJpaVersion        = "3.5.4"
+  h2Version                   = "2.4.240"
+  spotbugsVersion             = "4.9.4"
 }
 
 repositories {
@@ -187,12 +187,6 @@ jacocoTestCoverageVerification {
       }
     }
   }
-}
-
-configurations {
-  integrationTestApi.extendsFrom testApi
-  integrationTestCompile.extendsFrom testCompile
-  integrationTestRuntime.extendsFrom testRuntime
 }
 
 testing {
