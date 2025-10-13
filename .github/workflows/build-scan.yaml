@@ -8,7 +8,7 @@ on:
       - synchronize
   # INFO: Daily security scan
   schedule:
-    - cron: '0 0 * * *'
+    - cron: "0 0 * * *"
   workflow_dispatch: {}
 
 permissions:
@@ -18,9 +18,11 @@ permissions:
   issues: write # Required for posting comments on PRs
 
 env:
-  JAVA_HOME: '' # INFO: Force JAVA_HOME to be empty, so gradle will use the sdkman java version
-  NODE_VERSION: '22'
-  PYTHON_VERSION: '3.13'
+  JAVA_HOME: "" # INFO: Force JAVA_HOME to be empty, so gradle will use the sdkman java version
+  NODE_VERSION: "22"
+  PYTHON_VERSION: "3.13"
+  SMITHYTRANSLATE_VERSION: "0.5.7"
+  BUF_VERSION: "1.55.1"
 
 jobs:
   build_scan:
@@ -56,7 +58,7 @@ jobs:
         uses: coursier/setup-action@v1
 
       - name: Setup SmithyTranslate
-        run: cs install --channel https://disneystreaming.github.io/coursier.json smithytranslate
+        run: cs install --channel https://disneystreaming.github.io/coursier.json smithytranslate:${{ env.SMITHYTRANSLATE_VERSION }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -64,7 +66,7 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
 
       - name: Setup Buf
-        run: npm install -g @bufbuild/buf
+        run: npm install -g @bufbuild/buf@${{ env.BUF_VERSION }}
 
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -84,7 +86,7 @@ jobs:
       - name: Publish Checkstyle Results
         uses: jwgmeligmeyling/checkstyle-github-action@v1
         with:
-          path: 'build/reports/checkstyle/main.xml'
+          path: "build/reports/checkstyle/main.xml"
 
       - name: Archive test report
         uses: actions/upload-artifact@v4
@@ -110,8 +112,8 @@ jobs:
       - name: Code vulnerability scan
         uses: anchore/scan-action@v6
         with:
-          path: '${{ github.workspace }}/build/libs'
+          path: "${{ github.workspace }}/build/libs"
           fail-build: true
-          severity-cutoff: 'high'
+          severity-cutoff: "high"
           output-format: table
           only-fixed: false
