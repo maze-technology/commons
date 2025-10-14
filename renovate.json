@@ -1,0 +1,17 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:base"],
+  "gradle": {
+    "enabled": true
+  },
+  "packageRules": [
+    {
+      "matchManagers": ["gradle"],
+      "schedule": ["every weekday"],
+      "reviewers": ["maze-technology/java-engineers"],
+      "groupName": "Gradle Dependencies"
+    }
+  ],
+  "dependencyDashboard": true,
+  "configMigration": true
+}
