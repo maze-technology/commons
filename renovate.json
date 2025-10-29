@@ -6,10 +6,14 @@
   },
   "packageRules": [
     {
+      "matchManagers": ["github-actions"],
+      "schedule": ["every weekday"],
+      "reviewers": ["maze-technology/infrastructure-engineers"]
+    },
+    {
       "matchManagers": ["gradle"],
       "schedule": ["every weekday"],
-      "reviewers": ["maze-technology/java-engineers"],
-      "groupName": "Gradle Dependencies"
+      "reviewers": ["maze-technology/engineers"]
     }
   ],
   "dependencyDashboard": true,
