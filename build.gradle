@@ -17,7 +17,7 @@ ext {
   mapStructVersion            = "1.6.3"
   springBootVersion           = "3.5.6"
   protoValidateVersion        = "1.0.0"
-  grpcSpringBootVersion       = "3.1.0.RELEASE"
+  grpcSpringBootVersion       = "0.12.0"
   jakartaValidationVersion    = "3.1.1"
   jakartaAnnotationVersion    = "3.0.0"
   jakartaPersistenceVersion   = "3.2.0"
@@ -26,6 +26,7 @@ ext {
   springDataJpaVersion        = "3.5.4"
   h2Version                   = "2.4.240"
   spotbugsVersion             = "4.9.6"
+  googleCommonProtosVersion   = "2.62.0"
 }
 
 repositories {
@@ -60,8 +61,11 @@ dependencies {
   // ProtobValidate
   implementation "build.buf:protovalidate:$protoValidateVersion"
 
-  // Spring Boot gRPC Server
-  implementation "net.devh:grpc-server-spring-boot-starter:$grpcSpringBootVersion"
+  // Spring Boot GRPC
+  implementation "org.springframework.grpc:spring-grpc-spring-boot-starter:$grpcSpringBootVersion"
+  implementation platform("org.springframework.grpc:spring-grpc-dependencies:$grpcSpringBootVersion")
+
+  implementation "com.google.api.grpc:proto-google-common-protos:$googleCommonProtosVersion"
 
   // Jakarta
   implementation "jakarta.validation:jakarta.validation-api:$jakartaValidationVersion"

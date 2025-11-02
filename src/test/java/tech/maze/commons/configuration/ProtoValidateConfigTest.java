@@ -1,9 +1,11 @@
-package tech.maze.commons.config;
+package tech.maze.commons.configuration;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import build.buf.protovalidate.Validator;
+import tech.maze.commons.configuration.ProtoValidateConfiguration;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.Configuration;
@@ -16,13 +18,13 @@ class ProtoValidateConfigTest {
   @DisplayName("Should have correct configuration annotations")
   void shouldHaveCorrectAnnotations() {
     // Verify the class has required annotations
-    assertTrue(ProtoValidateConfig.class.isAnnotationPresent(Configuration.class));
+    assertTrue(ProtoValidateConfiguration.class.isAnnotationPresent(Configuration.class));
   }
 
   @Test
   @DisplayName("Should create validator bean successfully")
   void shouldCreateValidatorBean() {
-    final ProtoValidateConfig config = new ProtoValidateConfig();
+    final ProtoValidateConfiguration config = new ProtoValidateConfiguration();
     final Validator validator = config.validator();
 
     assertNotNull(validator);
