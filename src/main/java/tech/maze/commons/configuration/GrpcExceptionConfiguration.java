@@ -1,10 +1,10 @@
 package tech.maze.commons.configuration;
 
 import io.grpc.Status;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Bean;
-import org.springframework.grpc.server.exception.GrpcExceptionHandler;
 import jakarta.validation.ConstraintViolationException;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.grpc.server.exception.GrpcExceptionHandler;
 
 @Configuration
 public class GrpcExceptionConfiguration {
