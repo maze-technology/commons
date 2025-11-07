@@ -4,16 +4,14 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import build.buf.protovalidate.Validator;
-import tech.maze.commons.configuration.ProtoValidateConfiguration;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * Unit tests for the ProtoValidateConfig class.
+ * Unit tests for the ProtoValidateConfiguration class.
  */
-class ProtoValidateConfigTest {
+class ProtoValidateConfigurationTest {
   @Test
   @DisplayName("Should have correct configuration annotations")
   void shouldHaveCorrectAnnotations() {
