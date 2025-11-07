@@ -4,7 +4,7 @@ plugins {
   id("java-library")
   id("maven-publish")
   id("com.github.spotbugs") version "6.4.2"
-  id("org.springframework.boot") version "3.5.6"
+  id("org.springframework.boot") version "3.5.7"
   id("io.spring.dependency-management") version "1.1.7"
   id("io.freefair.lombok") version "9.0.0"
 }
@@ -15,7 +15,7 @@ ext {
   junitVersion                = "6.0.0"
   wiremockVersion             = "3.0.1"
   mapStructVersion            = "1.6.3"
-  springBootVersion           = "3.5.6"
+  springBootVersion           = "3.5.7"
   protoValidateVersion        = "1.0.0"
   grpcSpringBootVersion       = "0.12.0"
   jakartaValidationVersion    = "3.1.1"
