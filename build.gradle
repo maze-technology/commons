@@ -3,8 +3,8 @@ plugins {
   id("checkstyle")
   id("java-library")
   id("maven-publish")
-  id("com.github.spotbugs") version "6.4.2"
-  id("org.springframework.boot") version "3.5.6"
+  id("com.github.spotbugs") version "6.4.4"
+  id("org.springframework.boot") version "3.5.7"
   id("io.spring.dependency-management") version "1.1.7"
   id("io.freefair.lombok") version "9.0.0"
 }
@@ -12,21 +12,21 @@ plugins {
 group = "tech.maze"
 
 ext {
-  junitVersion                = "6.0.0"
+  junitVersion                = "6.0.1"
   wiremockVersion             = "3.0.1"
   mapStructVersion            = "1.6.3"
-  springBootVersion           = "3.5.6"
-  protoValidateVersion        = "1.0.0"
+  springBootVersion           = "3.5.7"
+  protoValidateVersion        = "1.0.1"
   grpcSpringBootVersion       = "0.12.0"
   jakartaValidationVersion    = "3.1.1"
   jakartaAnnotationVersion    = "3.0.0"
   jakartaPersistenceVersion   = "3.2.0"
   lombokVersion               = "1.18.42"
   hikariCpVersion             = "7.0.2"
-  springDataJpaVersion        = "3.5.4"
+  springDataJpaVersion        = "3.5.5"
   h2Version                   = "2.4.240"
-  spotbugsVersion             = "4.9.6"
-  googleCommonProtosVersion   = "2.62.0"
+  spotbugsVersion             = "4.9.8"
+  googleCommonProtosVersion   = "2.63.1"
 }
 
 repositories {
