@@ -49,7 +49,8 @@ class GrpcExceptionConfigurationTest {
   void shouldHandleConstraintViolationException() throws Exception {
     // Arrange
     final String errorMessage = "Validation failed";
-    final ConstraintViolationException exception = new ConstraintViolationException(errorMessage, null);
+    final ConstraintViolationException exception =
+        new ConstraintViolationException(errorMessage, null);
     final GrpcExceptionHandler handler = configuration.constraintViolationExceptionHandler();
 
     // Act
@@ -66,7 +67,8 @@ class GrpcExceptionConfigurationTest {
   @DisplayName("Should return null for non-ConstraintViolationException")
   void shouldReturnNullForNonConstraintViolationException() throws Exception {
     // Arrange
-    final IllegalArgumentException exception = new IllegalArgumentException("Not a constraint violation");
+    final IllegalArgumentException exception =
+        new IllegalArgumentException("Not a constraint violation");
     final GrpcExceptionHandler handler = configuration.constraintViolationExceptionHandler();
 
     // Act
@@ -132,7 +134,8 @@ class GrpcExceptionConfigurationTest {
   @DisplayName("Should have Order annotation with Integer.MAX_VALUE")
   void shouldHaveOrderAnnotation() throws NoSuchMethodException {
     // Arrange
-    final var method = GrpcExceptionConfiguration.class.getDeclaredMethod("defaultExceptionHandler");
+    final var method = GrpcExceptionConfiguration.class
+        .getDeclaredMethod("defaultExceptionHandler");
 
     // Assert
     assertTrue(method.isAnnotationPresent(Order.class));
@@ -176,10 +179,12 @@ class GrpcExceptionConfigurationTest {
   }
 
   @Test
-  @DisplayName("Should handle ConstraintViolationException in default handler when not handled by specific handler")
+  @DisplayName("Should handle ConstraintViolationException in default handler "
+      + "when not handled by specific handler")
   void shouldHandleConstraintViolationExceptionInDefaultHandler() throws Exception {
     // Arrange
-    final ConstraintViolationException exception = new ConstraintViolationException("Constraint violation", null);
+    final ConstraintViolationException exception =
+        new ConstraintViolationException("Constraint violation", null);
     final GrpcExceptionHandler handler = configuration.defaultExceptionHandler();
 
     // Act
@@ -202,7 +207,9 @@ class GrpcExceptionConfigurationTest {
    * @return The StatusException returned by the handler, or null
    * @throws Exception If reflection fails
    */
-  private StatusException invokeHandler(final GrpcExceptionHandler handler, final Throwable exception)
+  private StatusException invokeHandler(
+      final GrpcExceptionHandler handler,
+      final Throwable exception)
       throws Exception {
     // Find the single abstract method in the functional interface
     final Method[] methods = GrpcExceptionHandler.class.getMethods();
