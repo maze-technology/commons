@@ -7,11 +7,13 @@
   "packageRules": [
     {
       "matchManagers": ["github-actions"],
+      "groupName": "GitHub Actions",
       "schedule": ["every weekday"],
       "reviewers": ["maze-technology/infrastructure-engineers"]
     },
     {
       "matchManagers": ["gradle"],
+      "groupName": "Gradle",
       "schedule": ["every weekday"],
       "reviewers": ["maze-technology/engineers"]
     }
