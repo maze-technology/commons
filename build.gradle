@@ -100,6 +100,7 @@ dependencies {
 
 checkstyle {
   toolVersion = "10.21.3"
+  config = resources.text.fromFile("$rootDir/config/checkstyle/checkstyle.xml")
   maxWarnings = 0
   ignoreFailures = false
 }
