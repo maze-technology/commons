@@ -21,6 +21,7 @@ public class GrpcExceptionConfiguration {
    * @return A StatusException with INVALID_ARGUMENT status containing the error message
    */
   @Bean
+  @Order(1)
   GrpcExceptionHandler constraintViolationExceptionHandler() {
     return e -> (e instanceof ConstraintViolationException)
       ? Status.INVALID_ARGUMENT
@@ -37,6 +38,7 @@ public class GrpcExceptionConfiguration {
    * @return A StatusException with INVALID_ARGUMENT status containing the error message
    */
   @Bean
+  @Order(2)
   GrpcExceptionHandler illegalArgumentExceptionHandler() {
     return e -> (e instanceof IllegalArgumentException)
       ? Status.INVALID_ARGUMENT
