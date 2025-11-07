@@ -128,8 +128,8 @@ public interface BaseDtoMapper {
         : new java.math.BigInteger(unscaledValueBytes);
 
     return new java.math.BigDecimal(
-      unscaledValue,
-      dtoBigDecimal.getScale()
+        unscaledValue,
+        dtoBigDecimal.getScale()
     );
   }
 
