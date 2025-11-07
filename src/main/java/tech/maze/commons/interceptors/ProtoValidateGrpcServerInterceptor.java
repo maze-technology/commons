@@ -15,7 +15,7 @@ import io.grpc.ServerInterceptor;
 import io.grpc.StatusRuntimeException;
 import io.grpc.protobuf.StatusProto;
 import lombok.RequiredArgsConstructor;
-import net.devh.boot.grpc.server.interceptor.GrpcGlobalServerInterceptor;
+import org.springframework.grpc.server.GlobalServerInterceptor;
 import org.springframework.stereotype.Component;
 
 /**
@@ -33,7 +33,7 @@ import org.springframework.stereotype.Component;
  * </p>
  */
 @Component
-@GrpcGlobalServerInterceptor
+@GlobalServerInterceptor
 @RequiredArgsConstructor
 public class ProtoValidateGrpcServerInterceptor implements ServerInterceptor {
   private final Validator validator;

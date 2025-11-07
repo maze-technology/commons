@@ -1,4 +1,4 @@
-package tech.maze.commons.config;
+package tech.maze.commons.configuration;
 
 import build.buf.protovalidate.Validator;
 import build.buf.protovalidate.ValidatorFactory;
@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Configuration;
  * which is used for validating Protocol Buffer messages.
  */
 @Configuration
-public class ProtoValidateConfig {
+public class ProtoValidateConfiguration {
   /**
    * Creates and configures a new ProtoValidate Validator instance.
    * This validator can be used to validate Protocol Buffer messages against their schema
