@@ -197,6 +197,7 @@ jobs:
           exit-code: "0"
 
       - name: Compare vulnerabilities and fail on new ones
+        id: compare_vulns
         if: always() && github.event_name == 'pull_request' && steps.get_latest_version.outputs.has_baseline == 'true' && steps.scan_baseline.outcome == 'success'
         run: |
           python3 << 'EOF'
@@ -271,24 +272,23 @@ jobs:
         if: github.event_name == 'pull_request'
         id: vuln_eval
         run: |
-          # Try to read counts from comparison step, or extract from current scan results
+          # Check if comparison actually ran and completed successfully
           if [ -f new-vulns-count.txt ] && [ -f current-vulns-count.txt ]; then
             NEW_COUNT=$(cat new-vulns-count.txt)
             PR_COUNT=$(cat current-vulns-count.txt)
+            COMPARISON_RAN=true
           else
-            # Fallback: extract count from current scan results if comparison didn't run
+            # No comparison occurred - don't set counts for comment
             NEW_COUNT=0
-            if [ -f current-trivy-results.json ]; then
-              PR_COUNT=$(python3 -c "import json; data = json.load(open('current-trivy-results.json')); vulns = [v for r in data.get('Results', []) for v in r.get('Vulnerabilities', []) if v.get('Severity') in ['HIGH', 'CRITICAL']]; print(len(vulns))" 2>/dev/null || echo 0)
-            else
-              PR_COUNT=0
-            fi
+            PR_COUNT=0
+            COMPARISON_RAN=false
           fi
           echo "new_count=${NEW_COUNT}" >> $GITHUB_OUTPUT
           echo "pr_count=${PR_COUNT}" >> $GITHUB_OUTPUT
+          echo "comparison_ran=${COMPARISON_RAN}" >> $GITHUB_OUTPUT
 
       - name: Comment on PR about existing vulnerabilities
-        if: github.event_name == 'pull_request' && steps.vuln_eval.outputs.new_count == '0' && steps.vuln_eval.outputs.pr_count != '0'
+        if: github.event_name == 'pull_request' && steps.vuln_eval.outputs.comparison_ran == 'true' && steps.vuln_eval.outputs.new_count == '0' && steps.vuln_eval.outputs.pr_count != '0'
         uses: marocchino/sticky-pull-request-comment@v2
         with:
           header: security-scan
