@@ -186,6 +186,7 @@ jobs:
           exit-code: "0"
 
       - name: Scan current build with Trivy (JSON for comparison)
+        id: scan_current
         if: github.event_name == 'pull_request'
         uses: aquasecurity/trivy-action@0.33.1
         with:
@@ -198,7 +199,7 @@ jobs:
 
       - name: Compare vulnerabilities and fail on new ones
         id: compare_vulns
-        if: always() && github.event_name == 'pull_request' && steps.get_latest_version.outputs.has_baseline == 'true' && steps.scan_baseline.outcome == 'success'
+        if: always() && github.event_name == 'pull_request' && steps.get_latest_version.outputs.has_baseline == 'true' && steps.scan_baseline.outcome == 'success' && steps.scan_current.outcome == 'success'
         run: |
           python3 << 'EOF'
           import json
@@ -230,6 +231,13 @@ jobs:
               print("   Current build vulnerabilities will be shown but comparison is skipped.")
               sys.exit(0)
 
+          # Validate current scan file exists and is not empty
+          if not os.path.exists(current_file) or os.path.getsize(current_file) == 0:
+              print("❌ Current scan results are missing or empty. Cannot perform comparison.")
+              print("   This indicates the current build scan failed or was skipped.")
+              print("   Please check the scan step logs for errors.")
+              sys.exit(1)
+
           baseline_vulns = extract_vulns(baseline_file)
           current_vulns = extract_vulns(current_file)
 
@@ -240,6 +248,20 @@ jobs:
           elif not baseline_vulns:
               print("⚠️  Baseline scan results are invalid. Skipping comparison.")
               sys.exit(0)
+
+          # Validate current scan has valid data structure
+          try:
+              with open(current_file, 'r') as f:
+                  current_data = json.load(f)
+              # Check if file has valid JSON structure with Results array
+              if 'Results' not in current_data:
+                  print("❌ Current scan results have invalid structure. Cannot perform comparison.")
+                  print("   The scan may have failed or produced invalid output.")
+                  sys.exit(1)
+          except (json.JSONDecodeError, KeyError) as e:
+              print(f"❌ Current scan results are invalid JSON. Cannot perform comparison.")
+              print(f"   Error: {e}")
+              sys.exit(1)
 
           new_vulns = current_vulns - baseline_vulns
           fixed_vulns = baseline_vulns - current_vulns
