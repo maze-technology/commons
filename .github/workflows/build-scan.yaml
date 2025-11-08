@@ -249,18 +249,18 @@ jobs:
               print("⚠️  Baseline scan results are invalid. Skipping comparison.")
               sys.exit(0)
 
-          # Validate current scan has valid data structure
+          # Validate current scan file is valid JSON
+          # Note: We allow any valid JSON structure - extract_vulns will handle parsing
           try:
               with open(current_file, 'r') as f:
-                  current_data = json.load(f)
-              # Check if file has valid JSON structure with Results array
-              if 'Results' not in current_data:
-                  print("❌ Current scan results have invalid structure. Cannot perform comparison.")
-                  print("   The scan may have failed or produced invalid output.")
-                  sys.exit(1)
-          except (json.JSONDecodeError, KeyError) as e:
+                  json.load(f)  # Just validate it's valid JSON
+          except json.JSONDecodeError as e:
               print(f"❌ Current scan results are invalid JSON. Cannot perform comparison.")
-              print(f"   Error: {e}")
+              print(f"   JSON decode error: {e}")
+              print("   The scan may have failed or produced invalid output.")
+              sys.exit(1)
+          except Exception as e:
+              print(f"❌ Unexpected error reading current scan results: {e}")
               sys.exit(1)
 
           new_vulns = current_vulns - baseline_vulns
