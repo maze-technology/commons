@@ -310,7 +310,7 @@ jobs:
           echo "comparison_ran=${COMPARISON_RAN}" >> $GITHUB_OUTPUT
 
       - name: Comment on PR about existing vulnerabilities
-        if: github.event_name == 'pull_request' && steps.vuln_eval.outputs.comparison_ran == 'true' && steps.vuln_eval.outputs.new_count == '0' && steps.vuln_eval.outputs.pr_count != '0'
+        if: github.event_name == 'pull_request' && steps.vuln_eval.outputs.comparison_ran == 'true'
         uses: marocchino/sticky-pull-request-comment@v2
         with:
           header: security-scan
