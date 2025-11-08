@@ -9,8 +9,6 @@ plugins {
   id("io.freefair.lombok") version "9.0.0"
 }
 
-group = "tech.maze"
-
 ext {
   junitVersion                = "6.0.1"
   wiremockVersion             = "3.0.1"
@@ -261,5 +259,13 @@ publishing {
         password = System.getenv("GITHUB_TOKEN")
       }
     }
+  }
+}
+
+// Task to print Maven coordinates for CI/CD workflows
+tasks.register("printCoordinates") {
+  doLast {
+    println("group=${project.group}")
+    println("artifactId=${project.name}")
   }
 }
