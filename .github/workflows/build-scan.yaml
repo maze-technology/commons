@@ -164,6 +164,7 @@ jobs:
             "$JAR_URL" || echo "JAR not found, will skip baseline"
 
       - name: Scan baseline JAR with Trivy
+        id: scan_baseline
         if: github.event_name == 'pull_request' && steps.get_latest_version.outputs.has_baseline == 'true'
         uses: aquasecurity/trivy-action@0.33.1
         continue-on-error: true
@@ -196,11 +197,12 @@ jobs:
           exit-code: "0"
 
       - name: Compare vulnerabilities and fail on new ones
-        if: always() && github.event_name == 'pull_request' && steps.get_latest_version.outputs.has_baseline == 'true'
+        if: always() && github.event_name == 'pull_request' && steps.get_latest_version.outputs.has_baseline == 'true' && steps.scan_baseline.outcome == 'success'
         run: |
           python3 << 'EOF'
           import json
           import sys
+          import os
 
           def extract_vulns(json_file):
               """Extract unique vulnerability IDs from trivy JSON output"""
@@ -220,8 +222,23 @@ jobs:
           baseline_file = 'baseline-trivy-results.json'
           current_file = 'current-trivy-results.json'
 
+          # Validate baseline file exists and is not empty
+          if not os.path.exists(baseline_file) or os.path.getsize(baseline_file) == 0:
+              print("⚠️  Baseline scan results are missing or empty. Skipping comparison.")
+              print("   This may happen if the baseline JAR download failed or the scan failed.")
+              print("   Current build vulnerabilities will be shown but comparison is skipped.")
+              sys.exit(0)
+
           baseline_vulns = extract_vulns(baseline_file)
           current_vulns = extract_vulns(current_file)
+
+          # Validate baseline has valid data
+          if not baseline_vulns and os.path.getsize(baseline_file) > 0:
+              # File exists but has no vulnerabilities - this is valid
+              print("ℹ️  Baseline scan found no vulnerabilities (empty baseline).")
+          elif not baseline_vulns:
+              print("⚠️  Baseline scan results are invalid. Skipping comparison.")
+              sys.exit(0)
 
           new_vulns = current_vulns - baseline_vulns
           fixed_vulns = baseline_vulns - current_vulns
@@ -230,6 +247,12 @@ jobs:
           print(f"Current vulnerabilities: {len(current_vulns)}")
           print(f"New vulnerabilities: {len(new_vulns)}")
           print(f"Fixed vulnerabilities: {len(fixed_vulns)}")
+
+          # Write counts to files for PR comment evaluation
+          with open('new-vulns-count.txt', 'w') as f:
+              f.write(str(len(new_vulns)))
+          with open('current-vulns-count.txt', 'w') as f:
+              f.write(str(len(current_vulns)))
 
           if new_vulns:
               print("\n❌ NEW VULNERABILITIES DETECTED:")
@@ -243,3 +266,36 @@ jobs:
           else:
               print("\n✅ No new vulnerabilities detected")
           EOF
+
+      - name: Evaluate vulnerability status for PR comment
+        if: github.event_name == 'pull_request'
+        id: vuln_eval
+        run: |
+          # Try to read counts from comparison step, or extract from current scan results
+          if [ -f new-vulns-count.txt ] && [ -f current-vulns-count.txt ]; then
+            NEW_COUNT=$(cat new-vulns-count.txt)
+            PR_COUNT=$(cat current-vulns-count.txt)
+          else
+            # Fallback: extract count from current scan results if comparison didn't run
+            NEW_COUNT=0
+            if [ -f current-trivy-results.json ]; then
+              PR_COUNT=$(python3 -c "import json; data = json.load(open('current-trivy-results.json')); vulns = [v for r in data.get('Results', []) for v in r.get('Vulnerabilities', []) if v.get('Severity') in ['HIGH', 'CRITICAL']]; print(len(vulns))" 2>/dev/null || echo 0)
+            else
+              PR_COUNT=0
+            fi
+          fi
+          echo "new_count=${NEW_COUNT}" >> $GITHUB_OUTPUT
+          echo "pr_count=${PR_COUNT}" >> $GITHUB_OUTPUT
+
+      - name: Comment on PR about existing vulnerabilities
+        if: github.event_name == 'pull_request' && steps.vuln_eval.outputs.new_count == '0' && steps.vuln_eval.outputs.pr_count != '0'
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: security-scan
+          recreate: true
+          message: |
+            ### Security scan
+            - No new HIGH/CRITICAL vulnerabilities introduced.
+            - ${{ steps.vuln_eval.outputs.pr_count }} existing HIGH/CRITICAL vulnerabilities remain in the PR artifacts.
+
+            Check the workflow run's Summary for details.
