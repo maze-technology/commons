@@ -159,9 +159,10 @@ jobs:
           # Download from GitHub Packages Maven repository
           JAR_URL="https://maven.pkg.github.com/${{ github.repository }}/${GROUP_PATH}/${ARTIFACT}/${VERSION}/${ARTIFACT}-${VERSION}.jar"
           echo "Downloading JAR from: $JAR_URL"
-          curl -L -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+          # If baseline exists, download is required for vulnerability comparison
+          curl -L -f -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
             -o baseline-jar/${ARTIFACT}-${VERSION}.jar \
-            "$JAR_URL" || echo "JAR not found, will skip baseline"
+            "$JAR_URL"
 
       - name: Scan baseline JAR with Trivy
         id: scan_baseline
