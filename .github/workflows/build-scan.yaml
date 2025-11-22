@@ -168,7 +168,6 @@ jobs:
         id: scan_baseline
         if: github.event_name == 'pull_request' && steps.get_latest_version.outputs.has_baseline == 'true'
         uses: aquasecurity/trivy-action@0.33.1
-        continue-on-error: true
         with:
           scan-type: "fs"
           scan-ref: "${{ github.workspace }}/baseline-jar"
@@ -200,7 +199,7 @@ jobs:
 
       - name: Compare vulnerabilities and fail on new ones
         id: compare_vulns
-        if: always() && github.event_name == 'pull_request' && steps.get_latest_version.outputs.has_baseline == 'true' && steps.scan_baseline.outcome == 'success' && steps.scan_current.outcome == 'success'
+        if: github.event_name == 'pull_request' && steps.get_latest_version.outputs.has_baseline == 'true'
         run: |
           python3 << 'EOF'
           import json
@@ -239,19 +238,7 @@ jobs:
               print("   Please check the scan step logs for errors.")
               sys.exit(1)
 
-          baseline_vulns = extract_vulns(baseline_file)
-          current_vulns = extract_vulns(current_file)
-
-          # Validate baseline has valid data
-          if not baseline_vulns and os.path.getsize(baseline_file) > 0:
-              # File exists but has no vulnerabilities - this is valid
-              print("ℹ️  Baseline scan found no vulnerabilities (empty baseline).")
-          elif not baseline_vulns:
-              print("⚠️  Baseline scan results are invalid. Skipping comparison.")
-              sys.exit(0)
-
           # Validate current scan file is valid JSON
-          # Note: We allow any valid JSON structure - extract_vulns will handle parsing
           try:
               with open(current_file, 'r') as f:
                   json.load(f)  # Just validate it's valid JSON
@@ -263,6 +250,17 @@ jobs:
           except Exception as e:
               print(f"❌ Unexpected error reading current scan results: {e}")
               sys.exit(1)
+
+          baseline_vulns = extract_vulns(baseline_file)
+          current_vulns = extract_vulns(current_file)
+
+          # Validate baseline has valid data
+          if not baseline_vulns and os.path.getsize(baseline_file) > 0:
+              # File exists but has no vulnerabilities - this is valid
+              print("ℹ️  Baseline scan found no vulnerabilities (empty baseline).")
+          elif not baseline_vulns:
+              print("⚠️  Baseline scan results are invalid. Skipping comparison.")
+              sys.exit(0)
 
           new_vulns = current_vulns - baseline_vulns
           fixed_vulns = baseline_vulns - current_vulns
