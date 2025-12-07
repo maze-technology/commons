@@ -164,7 +164,7 @@ jobs:
             -o baseline-jar/${ARTIFACT}-${VERSION}.jar \
             "$JAR_URL"
 
-      - name: Scan current build with Trivy
+      - name: Scan current build with Trivy (for PRs)
         if: github.event_name == 'pull_request'
         uses: aquasecurity/trivy-action@0.33.1
         with:
@@ -173,6 +173,16 @@ jobs:
           format: "table"
           severity: "HIGH,CRITICAL"
           exit-code: "0"
+
+      - name: Scan current build with Trivy (for manual/scheduled triggers)
+        if: github.event_name == 'workflow_dispatch' || github.event_name == 'schedule'
+        uses: aquasecurity/trivy-action@0.33.1
+        with:
+          scan-type: "fs"
+          scan-ref: "${{ github.workspace }}/build/libs"
+          format: "table"
+          severity: "HIGH,CRITICAL"
+          exit-code: "1"
 
       - name: Scan baseline JAR with Trivy
         id: scan_baseline
@@ -323,13 +333,3 @@ jobs:
             - ${{ steps.vuln_eval.outputs.pr_count }} existing HIGH/CRITICAL vulnerabilities remain in the PR artifacts.
 
             Check the workflow run's Summary for details.
-
-      - name: Run Trivy vulnerability scanner (fail on HIGH/CRITICAL for scheduled scans)
-        if: github.event_name == 'schedule'
-        uses: aquasecurity/trivy-action@0.33.1
-        with:
-          scan-type: "fs"
-          scan-ref: "${{ github.workspace }}/build/libs"
-          format: "table"
-          severity: "HIGH,CRITICAL"
-          exit-code: "1"
