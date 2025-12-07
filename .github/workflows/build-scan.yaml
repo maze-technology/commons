@@ -164,6 +164,16 @@ jobs:
             -o baseline-jar/${ARTIFACT}-${VERSION}.jar \
             "$JAR_URL"
 
+      - name: Scan current build with Trivy
+        if: github.event_name == 'pull_request'
+        uses: aquasecurity/trivy-action@0.33.1
+        with:
+          scan-type: "fs"
+          scan-ref: "${{ github.workspace }}/build/libs"
+          format: "table"
+          severity: "HIGH,CRITICAL"
+          exit-code: "0"
+
       - name: Scan baseline JAR with Trivy
         id: scan_baseline
         if: github.event_name == 'pull_request' && steps.get_latest_version.outputs.has_baseline == 'true'
@@ -175,15 +185,7 @@ jobs:
           output: "baseline-trivy-results.json"
           severity: "HIGH,CRITICAL"
           exit-code: "0"
-
-      - name: Scan current build with Trivy
-        uses: aquasecurity/trivy-action@0.33.1
-        with:
-          scan-type: "fs"
-          scan-ref: "${{ github.workspace }}/build/libs"
-          format: "table"
-          severity: "HIGH,CRITICAL"
-          exit-code: "0"
+          skip-setup-trivy: true
 
       - name: Scan current build with Trivy (JSON for comparison)
         id: scan_current
@@ -196,6 +198,7 @@ jobs:
           output: "current-trivy-results.json"
           severity: "HIGH,CRITICAL"
           exit-code: "0"
+          skip-setup-trivy: true
 
       - name: Compare vulnerabilities and fail on new ones
         id: compare_vulns
