@@ -24,7 +24,7 @@ ext {
   springDataJpaVersion        = "3.5.8"
   h2Version                   = "2.4.240"
   spotbugsVersion             = "4.9.8"
-  googleCommonProtosVersion   = "2.64.1"
+  googleCommonProtosVersion   = "2.65.0"
 }
 
 repositories {
