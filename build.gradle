@@ -50,6 +50,7 @@ dependencyManagement {
 dependencies {
   // Spring Boot
   implementation "org.springframework.boot:spring-boot"
+  implementation "org.springframework.boot:spring-boot-autoconfigure"
   implementation "org.springframework.data:spring-data-jpa"
 
   // HikariCP
