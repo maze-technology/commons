@@ -2,7 +2,7 @@ package tech.maze.commons.eventstream;
 
 import static io.cloudevents.protobuf.ProtobufFormat.PROTO_DATA_CONTENT_TYPE;
 
-import com.google.protobuf.MessageLite;
+import com.google.protobuf.Message;
 import io.cloudevents.CloudEvent;
 import io.cloudevents.core.builder.CloudEventBuilder;
 import io.cloudevents.protobuf.ProtoCloudEventData;
@@ -55,7 +55,7 @@ public class EventSender {
    * @param message the protobuf payload
    * @return true if the event was sent, false otherwise
    */
-  public boolean send(String destination, MessageLite message) {
+  public boolean send(String destination, Message message) {
     if (destination == null || destination.isBlank()) {
       throw new IllegalArgumentException("destination is required");
     }
