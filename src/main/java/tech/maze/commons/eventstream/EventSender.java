@@ -3,7 +3,7 @@ package tech.maze.commons.eventstream;
 import static io.cloudevents.protobuf.ProtobufFormat.PROTO_DATA_CONTENT_TYPE;
 
 import com.google.protobuf.Message;
-import com.github.spotbugs.annotations.SuppressFBWarnings;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.cloudevents.CloudEvent;
 import io.cloudevents.core.builder.CloudEventBuilder;
 import io.cloudevents.protobuf.ProtoCloudEventData;
