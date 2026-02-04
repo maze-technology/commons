@@ -3,6 +3,7 @@ package tech.maze.commons.eventstream;
 import static io.cloudevents.protobuf.ProtobufFormat.PROTO_DATA_CONTENT_TYPE;
 
 import com.google.protobuf.Message;
+import com.github.spotbugs.annotations.SuppressFBWarnings;
 import io.cloudevents.CloudEvent;
 import io.cloudevents.core.builder.CloudEventBuilder;
 import io.cloudevents.protobuf.ProtoCloudEventData;
@@ -21,6 +22,10 @@ import org.springframework.stereotype.Component;
 @Component
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 @ConditionalOnProperty(prefix = MazeEventProperties.PREFIX, name = "enabled", havingValue = "true")
+@SuppressFBWarnings(
+    value = "EI_EXPOSE_REP2",
+    justification = "Spring-managed dependencies are safe to store in fields."
+)
 public class EventSender {
   public static final String REPLY_TO_EXTENSION = "replyto";
 
