@@ -184,6 +184,7 @@ jacocoTestReport {
 }
 
 jacocoTestCoverageVerification {
+  dependsOn delombok, jacocoTestReport
   sourceSets(sourceSets.main)
   executionData = fileTree(project.rootDir.absolutePath).include("**/build/jacoco/*.exec")
 
