@@ -33,6 +33,9 @@ public class MazeEventProperties {
    */
   Retry retry = new Retry();
 
+  /**
+   * Retry configuration for event publishing.
+   */
   @Data
   @FieldDefaults(level = AccessLevel.PRIVATE)
   public static class Retry {

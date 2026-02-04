@@ -10,6 +10,9 @@ import org.springframework.retry.backoff.FixedBackOffPolicy;
 import org.springframework.retry.policy.SimpleRetryPolicy;
 import org.springframework.retry.support.RetryTemplate;
 
+/**
+ * Configures retry behavior for event publishing.
+ */
 @Configuration
 @RequiredArgsConstructor
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
@@ -17,6 +20,11 @@ import org.springframework.retry.support.RetryTemplate;
 public class EventStreamRetryConfiguration {
   MazeEventProperties eventProperties;
 
+  /**
+   * Retry template for event publishing.
+   *
+   * @return configured retry template
+   */
   @Bean
   public RetryTemplate eventStreamRetryTemplate() {
     final int maxAttempts = Math.max(1, eventProperties.getRetry().getMaxAttempts());

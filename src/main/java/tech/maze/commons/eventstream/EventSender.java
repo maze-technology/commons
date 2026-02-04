@@ -28,7 +28,18 @@ public class EventSender {
   MazeEventProperties eventProperties;
   RetryTemplate retryTemplate;
 
-  public EventSender(StreamBridge streamBridge, MazeEventProperties eventProperties, RetryTemplate retryTemplate) {
+  /**
+   * Creates an event sender for CloudEvents publishing.
+   *
+   * @param streamBridge spring cloud stream bridge
+   * @param eventProperties event configuration
+   * @param retryTemplate retry policy for publishing
+   */
+  public EventSender(
+      StreamBridge streamBridge,
+      MazeEventProperties eventProperties,
+      RetryTemplate retryTemplate
+  ) {
     this.streamBridge = streamBridge;
     this.eventProperties = eventProperties;
     this.retryTemplate = retryTemplate;
