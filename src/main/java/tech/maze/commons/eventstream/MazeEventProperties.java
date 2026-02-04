@@ -1,6 +1,7 @@
 package tech.maze.commons.eventstream;
 
 import java.net.URI;
+import java.time.Duration;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
@@ -26,4 +27,26 @@ public class MazeEventProperties {
    * CloudEvents source for events emitted by this service.
    */
   URI source;
+
+  /**
+   * Retry configuration for event publishing.
+   */
+  Retry retry = new Retry();
+
+  /**
+   * Retry configuration for event publishing.
+   */
+  @Data
+  @FieldDefaults(level = AccessLevel.PRIVATE)
+  public static class Retry {
+    /**
+     * Maximum attempts for sending an event.
+     */
+    int maxAttempts = 3;
+
+    /**
+     * Backoff between attempts.
+     */
+    Duration backoff = Duration.ofMillis(250);
+  }
 }

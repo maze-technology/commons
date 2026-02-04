@@ -14,6 +14,8 @@ ext {
   wiremockVersion             = "3.0.1"
   mapStructVersion            = "1.6.3"
   springBootVersion           = "4.0.2"
+  springCloudVersion          = "2025.1.1"
+  cloudEventsVersion          = "4.0.1"
   protoValidateVersion        = "1.1.0"
   grpcSpringBootVersion       = "1.0.2"
   jakartaValidationVersion    = "3.1.1"
@@ -43,6 +45,8 @@ repositories {
 dependencyManagement {
   imports {
     mavenBom "org.springframework.boot:spring-boot-dependencies:$springBootVersion"
+    mavenBom "org.springframework.cloud:spring-cloud-dependencies:$springCloudVersion"
+    mavenBom "io.cloudevents:cloudevents-bom:$cloudEventsVersion"
     mavenBom "org.junit:junit-bom:$junitVersion"
   }
 }
@@ -54,6 +58,12 @@ dependencies {
   implementation "org.springframework.boot:spring-boot-jdbc"
   implementation "org.springframework.boot:spring-boot-jpa"
   implementation "org.springframework.data:spring-data-jpa"
+  implementation "org.springframework.cloud:spring-cloud-stream"
+  implementation "org.springframework.retry:spring-retry"
+
+  // CloudEvents
+  implementation "io.cloudevents:cloudevents-core"
+  implementation "io.cloudevents:cloudevents-protobuf"
 
   // HikariCP
   implementation "com.zaxxer:HikariCP:$hikariCpVersion"
@@ -174,6 +184,7 @@ jacocoTestReport {
 }
 
 jacocoTestCoverageVerification {
+  dependsOn delombok, jacocoTestReport
   sourceSets(sourceSets.main)
   executionData = fileTree(project.rootDir.absolutePath).include("**/build/jacoco/*.exec")
 
