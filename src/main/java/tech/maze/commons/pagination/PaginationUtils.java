@@ -7,24 +7,21 @@ public final class PaginationUtils {
   private PaginationUtils() {}
 
   /**
-   * Normalizes raw pagination values and clamps them to int bounds.
+   * Normalizes raw pagination values.
    *
    * @param page requested page (0-based)
    * @param limit requested page size
    * @param defaultLimit fallback limit when input is invalid
    * @return normalized pagination values
    */
-  public static Pagination normalize(long page, long limit, int defaultLimit) {
-    final long sanitizedPage = Math.max(0L, page);
-    final long sanitizedLimit = Math.max(1L, limit > 0 ? limit : defaultLimit);
+  public static Pagination normalize(int page, int limit, int defaultLimit) {
+    final int sanitizedPage = Math.max(0, page);
+    final int resolvedDefaultLimit = Math.max(1, defaultLimit);
+    final int sanitizedLimit = limit > 0 ? limit : resolvedDefaultLimit;
 
     return new Pagination(
-        longToIntClamped(sanitizedPage),
-        longToIntClamped(sanitizedLimit)
+        sanitizedPage,
+        sanitizedLimit
     );
-  }
-
-  private static int longToIntClamped(long value) {
-    return value > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) value;
   }
 }
