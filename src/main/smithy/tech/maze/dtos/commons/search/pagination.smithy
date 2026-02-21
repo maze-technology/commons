@@ -6,8 +6,8 @@ use alloy.proto#protoEnabled
 
 @protoEnabled
 structure Pagination {
-    page: Long
-    limit: Long
+    page: Integer
+    limit: Integer
 }
 
 @protoEnabled
