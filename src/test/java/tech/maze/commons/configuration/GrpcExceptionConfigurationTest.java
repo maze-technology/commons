@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.grpc.server.exception.GrpcExceptionHandler;
+import tech.maze.commons.exceptions.GrpcStatusException;
 
 /**
  * Unit tests for the GrpcExceptionConfiguration class.
@@ -75,6 +76,54 @@ class GrpcExceptionConfigurationTest {
     final StatusException result = invokeHandler(handler, exception);
 
     // Assert
+    assertNull(result);
+  }
+
+  @Test
+  @DisplayName("Should create grpcStatusExceptionHandler bean successfully")
+  void shouldCreateGrpcStatusExceptionHandler() {
+    final GrpcExceptionHandler handler = configuration.grpcStatusExceptionHandler();
+    assertNotNull(handler);
+  }
+
+  @Test
+  @DisplayName("Should handle GrpcStatusException INVALID_ARGUMENT")
+  void shouldHandleGrpcStatusExceptionInvalidArgument() throws Exception {
+    final String errorMessage = "Invalid request payload";
+    final GrpcStatusException exception = GrpcStatusException.invalidArgument(errorMessage);
+    final GrpcExceptionHandler handler = configuration.grpcStatusExceptionHandler();
+
+    final StatusException result = invokeHandler(handler, exception);
+
+    assertNotNull(result);
+    assertEquals(Status.Code.INVALID_ARGUMENT, result.getStatus().getCode());
+    assertEquals(errorMessage, result.getStatus().getDescription());
+    assertEquals(exception, result.getCause());
+  }
+
+  @Test
+  @DisplayName("Should handle GrpcStatusException NOT_FOUND")
+  void shouldHandleGrpcStatusExceptionNotFound() throws Exception {
+    final String errorMessage = "Asset not found";
+    final GrpcStatusException exception = GrpcStatusException.notFound(errorMessage);
+    final GrpcExceptionHandler handler = configuration.grpcStatusExceptionHandler();
+
+    final StatusException result = invokeHandler(handler, exception);
+
+    assertNotNull(result);
+    assertEquals(Status.Code.NOT_FOUND, result.getStatus().getCode());
+    assertEquals(errorMessage, result.getStatus().getDescription());
+    assertEquals(exception, result.getCause());
+  }
+
+  @Test
+  @DisplayName("Should return null for non-GrpcStatusException")
+  void shouldReturnNullForNonGrpcStatusException() throws Exception {
+    final RuntimeException exception = new RuntimeException("Not a grpc status exception");
+    final GrpcExceptionHandler handler = configuration.grpcStatusExceptionHandler();
+
+    final StatusException result = invokeHandler(handler, exception);
+
     assertNull(result);
   }
 
@@ -228,4 +277,3 @@ class GrpcExceptionConfigurationTest {
     return (StatusException) handlerMethod.invoke(handler, exception);
   }
 }
-
