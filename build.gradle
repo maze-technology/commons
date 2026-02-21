@@ -108,6 +108,13 @@ dependencies {
   testImplementation "com.h2database:h2:$h2Version"
 }
 
+processResources {
+  from("src/main/smithy") {
+    include("**/*.smithy")
+    into("META-INF/smithy")
+  }
+}
+
 checkstyle {
   toolVersion = "13.2.0"
   config = resources.text.fromFile("$rootDir/config/checkstyle/checkstyle.xml")
